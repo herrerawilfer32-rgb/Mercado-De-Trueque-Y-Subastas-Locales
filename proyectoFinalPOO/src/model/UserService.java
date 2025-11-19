@@ -22,6 +22,10 @@ public class UserService {
 		return null; // Login fallido
 	}
 	
+	public User buscarUsuarioPorId(String id) {
+		// Llama al método existente en el repositorio.
+		return userRepository.buscarPorId(id);
+	}
 	/**
      * Registra un nuevo usuario. Valida que el USERNAME y el ID (Cédula) sean únicos.
      */
