@@ -11,15 +11,16 @@ public class UserService {
 	}
 	
 	// Método login (Búsqueda por Username)
-	public User login(String username, String password) {
-		
-		User user = userRepository.buscarPorNombreUsuario(username);
-		
-		// CORRECCIÓN: Usamos .equalsIgnoreCase(password) para evitar errores de mayúsculas/minúsculas
-		if(user != null && user.getContraseñaHash().equalsIgnoreCase(password)) { 
-			return user; // Login exitoso
-		}
-		return null; // Login fallido
+	public User iniciarSesion(String username, String password) {
+	    
+	    User user = userRepository.buscarPorNombreUsuario(username);
+	    
+	    // Verificación (usando equals para comparar Strings)
+	    if (user != null && user.getContraseñaHash().equals(password)) {
+	        return user;
+	    } else {
+	        return null;
+	    }
 	}
 	
 	public User buscarUsuarioPorId(String id) {

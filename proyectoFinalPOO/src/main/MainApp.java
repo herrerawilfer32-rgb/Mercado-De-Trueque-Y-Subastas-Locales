@@ -1,31 +1,39 @@
 package main;
 
-import controller.AuthController;
-import model.UserService;
-import persistence.UserRepository;
-import view.LoginWindow;
-
 import javax.swing.SwingUtilities;
+import view.MainWindow;
+import controller.AuthController;
+import controller.PublicacionController; // Nuevo
+import model.UserService;
+import model.PublicacionService;
+import model.OfertaService;
+import persistence.UserRepository;
+import persistence.PublicacionRepository;
+import persistence.OfertaRepository;
 
 public class MainApp {
-
+    
     public static void main(String[] args) {
-        // 1. Inicializar la Capa de Persistencia (DAO)
-        UserRepository userRepository = new UserRepository();
-
-        // 2. Inicializar la Capa de Servicio (Lógica de Negocio), inyectando el Repositorio
-        UserService userService = new UserService(userRepository);
-
-        // 3. Inicializar el Controlador, inyectando el Servicio
-        AuthController authController = new AuthController(userService);
-
-        // 4. Iniciar la aplicación en el hilo de despacho de eventos de Swing (obligatorio para Swing)
         SwingUtilities.invokeLater(() -> {
-            new LoginWindow(authController);
+            // 1. Repositorios
+            UserRepository userRepo = new UserRepository();
+            PublicacionRepository pubRepo = new PublicacionRepository();
+            OfertaRepository ofertaRepo = new OfertaRepository();
+            
+            // 2. Servicios
+            UserService userService = new UserService(userRepo);
+            PublicacionService pubService = new PublicacionService(pubRepo, userService);
+            OfertaService ofertaService = new OfertaService(ofertaRepo, userService, pubService);
+            
+            // 3. Controladores
+            AuthController authController = new AuthController(userService);
+            // Nuevo controlador para las publicaciones
+            PublicacionController pubController = new PublicacionController(pubService);
+            
+            // 4. Vista Principal
+            // Le pasamos ambos controladores para que pueda manejar Login y Publicaciones
+            MainWindow main = new MainWindow(authController, pubController);
+            main.setVisible(true);
         });
-
-        // NOTA DE PRUEBA: Puedes verificar el registro aquí
-        // boolean registro = authController.manejarRegistro("30000000", "nuevoUser", "secure123", "test@mail.com", "Luis", "Ruiz", "Cali");
-        // System.out.println("Intento de registro: " + registro);
     }
 }

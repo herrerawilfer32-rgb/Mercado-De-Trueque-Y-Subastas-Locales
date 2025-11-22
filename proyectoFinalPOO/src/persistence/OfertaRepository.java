@@ -11,14 +11,33 @@ import java.util.stream.Collectors;
 
 public class OfertaRepository {
 	
-	//Simulación de la "Base de Datos": Key: idOferta (String), Value: Objeto Oferta
+	//1. Base de datos principal (busqueda por ID de oferta)
 	private static final Map<String, Oferta> baseDeDatos = new HashMap<>();
 	
+	//2. Indice secundario (Busqueda por publicacion)
+	//HashMap<String, List<Oferta>
+	private static final Map<String, List<Oferta>> indicePorPublicacion = new HashMap<>();
+	
 	/**
-	 * Guarda o actualiza un objeto Oferta, usando el idOferta como clave.
+	 * Guarda o actualiza un objeto Oferta.
 	 */
 	public void guardar(Oferta oferta) {
+		//Guardar en la estructura principal
 		baseDeDatos.put(oferta.getIdOferta(), oferta);
+		
+		//Actualizar el indice secundario
+		String idPub = oferta.getIdPublicacion();
+		
+		//Si no existe la lista para esa publicacion, la creamos
+		indicePorPublicacion.putIfAbsent(idPub, new ArrayList<>());
+		
+		//Obtenemos la lista y agregamos la oferta
+		List<Oferta> ofertasDeLaPublicacion = indicePorPublicacion.get(idPub);
+		
+		//Opcional para evitar duplicados
+		if (!ofertasDeLaPublicacion.contains(oferta)) {
+			ofertasDeLaPublicacion.add(oferta);
+		}
 	}
 	
 	/**
@@ -42,15 +61,8 @@ public class OfertaRepository {
 		return new ArrayList<>(baseDeDatos.values());
 	}
 	
-	//TODO: corregir método, cambiar por mala eficiencia
+	//Buscar ofertas por idPublicacion
 	public List<Oferta> buscarPorPublicacion(String idPublicacion){
-		//Creamos una lista vacía para guardar los resultados
-		List<Oferta> resultados = new ArrayList<>();
-		
-		//Recorremos todas las ofertas que existen en el sistema 
-		//baseDeDatos.values() nos da la coleccion de objetos oferta
-		for (Oferta oferta : baseDeDatos.values()) {
-			
-		}
+		return indicePorPublicacion.getOrDefault(idPublicacion, new ArrayList<>());
 	}
 }

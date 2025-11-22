@@ -14,7 +14,11 @@ public class Oferta {
 	private double montoOferta; // Monto en dinero ofrecido
 	private String descripcionTrueque; // Descripción del trueque ofrecido
 	
-	public Oferta(String idOferta, String idPublicacion, String idOfertante, Date fechaOferta, double montoOferta, String descripcionTrueque) {
+	private util.EstadoOferta estadoOferta;
+	
+	public Oferta(String idOferta, String idPublicacion, String idOfertante, 
+				Date fechaOferta, double montoOferta, 
+				String descripcionTrueque, EstadoOferta estadoOferta) {
 		this.idOferta = idOferta;
 		this.idPublicacion = idPublicacion;
 		this.idOfertante = idOfertante;
@@ -23,6 +27,8 @@ public class Oferta {
 		this.descripcionTrueque = descripcionTrueque;
 	}
 
+	//Getters y setters
+	
 	public String getIdOferta() {
 		return idOferta;
 	}
@@ -70,7 +76,13 @@ public class Oferta {
 	public void setDescripcionTrueque(String descripcionTrueque) {
 		this.descripcionTrueque = descripcionTrueque;
 	}
-	
-	// Getters y setters
+
+	public util.EstadoOferta getEstadoOferta() {
+		return estadoOferta;
+	}
+
+	public void setEstadoOferta(util.EstadoOferta estadoOferta) {
+		this.estadoOferta = estadoOferta;
+	}
 	
 }

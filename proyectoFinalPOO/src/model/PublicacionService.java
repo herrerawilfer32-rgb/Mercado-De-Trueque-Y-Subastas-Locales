@@ -35,7 +35,43 @@ public class PublicacionService {
         return "Ubicación no disponible";
 	}
 
+	//Buscar publicaciones por idVendedor
 	public Publicacion buscarPublicacionPorId(String idPublicacion) {
 		return publicacionRepository.buscarPorIdArticulo(idPublicacion);
 	}
+	
+	/*
+	 * Cierra la publicación cambiando su estado a CERRADA
+	 */
+	public void cerrarPublicacion(String idPublicacion) {
+		// 1. Buscar la publicación por su ID
+		Publicacion publicacion = publicacionRepository.buscarPorIdArticulo(idPublicacion);
+		
+		// 2. Validamos que exista
+	    if (publicacion != null) {
+	        // 3. Cambiamos el estado
+	        publicacion.setEstado(util.EstadoPublicacion.CERRADA);
+	        
+	        // 4. Guardamos el cambio (al ser un HashMap, el put sobrescribe y actualiza)
+	        publicacionRepository.guardar(publicacion);
+	        
+	        System.out.println("La publicación '" + publicacion.getTitulo() + "' ha sido CERRADA.");
+	    } else {
+	        System.out.println("Error: No se pudo cerrar la publicación. ID no encontrado.");
+	    }
+	}
+	
+	/**
+     * Devuelve todas las publicaciones activas.
+     */
+    public List<Publicacion> buscarPublicacionesActivas() {
+        return publicacionRepository.buscarPublicacionesActivas();
+    }
+
+    /**
+     * Guarda una publicación nueva (Subasta o Trueque).
+     */
+    public void guardarPublicacion(Publicacion publicacion) {
+        publicacionRepository.guardar(publicacion);
+    }
 }

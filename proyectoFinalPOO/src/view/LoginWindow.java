@@ -2,124 +2,77 @@ package view;
 
 import controller.AuthController;
 import model.User;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class LoginWindow extends JFrame implements ActionListener {
+public class LoginWindow extends JFrame {
 
     private final AuthController authController;
+    private final MainWindow mainWindow; // Referencia a la ventana principal
 
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private JButton loginButton;
 
-    public LoginWindow(AuthController authController) {
+    // Constructor modificado: recibe MainWindow
+    public LoginWindow(AuthController authController, MainWindow mainWindow) {
         this.authController = authController;
-        setTitle("Mercado Local - Acceso");
-        setSize(450, 200);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); // Centra los componentes
+        this.mainWindow = mainWindow;
+        
+        setTitle("Acceso de Usuario");
+        setSize(400, 250);
+        // DISPOSE_ON_CLOSE: Solo cierra esta ventanita, no toda la app
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+        setLayout(new BorderLayout());
+        setLocationRelativeTo(mainWindow); // Aparece centrada sobre la principal
 
         initComponents();
-
-        setLocationRelativeTo(null);
         setVisible(true);
     }
 
     private void initComponents() {
-        // Campos de entrada
-        usernameField = new JTextField(25);
-        passwordField = new JPasswordField(25);
+        // Panel Central (Formulario)
+        JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
-        // Paneles para mejor organización
-        JPanel inputPanel = new JPanel(new GridLayout(2, 2, 5, 5));
-        inputPanel.add(new JLabel("Usuario:"));
-        inputPanel.add(usernameField);
-        inputPanel.add(new JLabel("Contraseña:"));
-        inputPanel.add(passwordField);
-        add(inputPanel);
-
-        // Botones
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        usernameField = new JTextField();
+        passwordField = new JPasswordField();
         
-        // Botón de Login (Acceder)
-        loginButton = new JButton("Acceder");
-        loginButton.addActionListener(this);
-        buttonPanel.add(loginButton);
+        formPanel.add(new JLabel("Usuario:"));
+        formPanel.add(usernameField);
+        formPanel.add(new JLabel("Contraseña:"));
+        formPanel.add(passwordField);
         
-        // Botón de Registro (Nuevo)
-        JButton registerButton = new JButton("Registrar");
-        // Usamos un ActionListener para llamar directamente al método handleRegistration
-        registerButton.addActionListener(e -> handleRegistration()); 
-        buttonPanel.add(registerButton);
+        add(formPanel, BorderLayout.CENTER);
 
-        add(buttonPanel);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == loginButton) {
-            handleLogin();
-        }
+        // Panel Inferior (Botones)
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton btnLogin = new JButton("Entrar");
+        JButton btnCancel = new JButton("Cancelar");
+        
+        btnLogin.addActionListener(e -> handleLogin());
+        btnCancel.addActionListener(e -> dispose()); // Cierra la ventana sin hacer nada
+        
+        buttonPanel.add(btnLogin);
+        buttonPanel.add(btnCancel);
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 
     private void handleLogin() {
-        String username = usernameField.getText().trim();
-        String password = new String(passwordField.getPassword()); 
-
-        User loggedInUser = authController.manejarLogin(username, password);
-
-        if (loggedInUser != null) {
-            JOptionPane.showMessageDialog(this, 
-                "¡Bienvenido, " + loggedInUser.getNombre() + "!", 
-                "Login Exitoso", 
-                JOptionPane.INFORMATION_MESSAGE);
-            
-            dispose();
-            // TODO: Abrir la Ventana Principal (1.2)
-            System.out.println("-> ABRIENDO VENTANA PRINCIPAL para usuario " + loggedInUser.getNombreUsuario());
-            
-        } else {
-            JOptionPane.showMessageDialog(this, 
-                "Usuario o Contraseña inválidos. (Prueba con 'admin' / '12345' )", 
-                "Error de Autenticación", 
-                JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void handleRegistration() {
-        // Recolección de datos mediante diálogos de entrada simples
-        String id = JOptionPane.showInputDialog(this, "Cédula/ID Único:");
-        String username = JOptionPane.showInputDialog(this, "Nombre de Usuario:");
-        String password = JOptionPane.showInputDialog(this, "Contraseña:");
-        String nombre = JOptionPane.showInputDialog(this, "Nombre:");
-        String apellido = JOptionPane.showInputDialog(this, "Apellido:");
-        String correo = JOptionPane.showInputDialog(this, "Correo:");
-        String ubicacion = JOptionPane.showInputDialog(this, "Ubicación:");
-
-        // Validación básica de campos clave (puedes mejorar esto)
-        if (id == null || username == null || password == null || id.isEmpty() || username.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El ID, Usuario y Contraseña son obligatorios.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+        String user = usernameField.getText();
+        String pass = new String(passwordField.getPassword());
         
-        // Llamar al controlador para el registro
-        boolean success = authController.manejarRegistro(id, username, password, correo, nombre, apellido, ubicacion);
-
-        // Mostrar resultado
-        if (success) {
-            JOptionPane.showMessageDialog(this, 
-                "¡Registro Exitoso! Usuario: " + username + " guardado.", 
-                "Registro", 
-                JOptionPane.INFORMATION_MESSAGE);
+        User usuario = authController.manejarLogin(user, pass);
+        
+        if (usuario != null) {
+            // 1. AVISAR A LA VENTANA PRINCIPAL
+            mainWindow.setUsuarioLogueado(usuario);
+            
+            JOptionPane.showMessageDialog(this, "¡Bienvenido de nuevo!");
+            
+            // 2. CERRAR ESTA VENTANA DE LOGIN
+            dispose();
         } else {
-            JOptionPane.showMessageDialog(this, 
-                "Fallo el registro. El ID o el Nombre de Usuario ya existen.", 
-                "Registro", 
-                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Datos incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

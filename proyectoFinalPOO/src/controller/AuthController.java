@@ -1,39 +1,36 @@
 package controller;
 
-import model.UserService;
+import view.AuthView; // Aunque ya no se usa AuthView, lo mantenemos por consistencia
 import model.User;
+import model.UserService;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class AuthController {
+    
+    // Si usas LoginWindow, ya no necesitas authView como campo, pero lo mantenemos si no la has borrado.
+    // private final AuthView authView; 
     private final UserService userService;
     
+    // Nota: El constructor original (que usaba AuthView) debe ser reemplazado por este.
     public AuthController(UserService userService) {
         this.userService = userService;
     }
-
-    /**
-     * Maneja la solicitud de Login (usando USERNAME y Contraseña).
-     */
+    
+    // 1. MÉTODO REQUERIDO POR LoginWindow
     public User manejarLogin(String username, String password) {
-        User user = userService.login(username, password);
-        if (user != null) {
-            System.out.println("Login exitoso. Bienvenido: " + user.getNombre() + " (ID: " + user.getId() + ")");
-        } else {
-            System.out.println("Error de Login: Nombre de Usuario o Contraseña inválida.");
-        }
-        return user;
+        // La lógica de inicio de sesión se centraliza aquí
+        return userService.iniciarSesion(username, password);
     }
-
-    /**
-     * Maneja la solicitud de Registro, validando unicidad por USERNAME y ID.
-     */
+    
+    // 2. MÉTODO REQUERIDO POR LoginWindow
     public boolean manejarRegistro(String id, String username, String password, String correo, String nombre, String apellido, String ubicacion) {
-        boolean exito = userService.registrarUsuario(id, username, password, correo, nombre, apellido, ubicacion);
-
-        if (exito) {
-            System.out.println("Registro exitoso. Usuario " + username + " guardado (Cédula: " + id + ").");
-        } else {
-            System.out.println("Error de Registro. Revise si el ID o el Nombre de Usuario ya existen.");
-        }
-        return exito;
+        // La lógica de registro se centraliza aquí
+        
+        // Asumiendo que UserService tiene un método registrarUsuario
+        // Nota: Debes crear este método en UserService.java
+        return userService.registrarUsuario(id, username, password, correo, nombre, apellido, ubicacion);
     }
+    
 }
