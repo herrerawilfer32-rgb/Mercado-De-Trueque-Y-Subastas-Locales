@@ -2,6 +2,13 @@ package view;
 
 import controller.AuthController;
 import controller.PublicacionController;
+// >>> CHAT
+import controller.ChatController;
+import model.chat.Chat;
+import persistence.ChatRepository;
+import persistence.ChatFileRepository;
+// <<< CHAT
+
 import model.Publicacion;
 import model.User;
 
@@ -15,6 +22,9 @@ public class MainWindow extends JFrame {
 
     private final AuthController authController;
     private final PublicacionController pubController;
+    // >>> CHAT
+    private final ChatController chatController;
+    // <<< CHAT
 
     // Componentes UI
     private JLabel lblBienvenida;
@@ -22,9 +32,20 @@ public class MainWindow extends JFrame {
     private DefaultListModel<Publicacion> listModel; // Cambiado a Publicacion
     private JList<Publicacion> listaVisual;
 
+    // >>> CHAT - componentes del módulo de chat
+    private JTabbedPane pestañasCentro;
+    private PanelListaChats panelListaChats;
+    private PanelChatDetalle panelChatDetalle;
+    // <<< CHAT
+
     public MainWindow(AuthController authController, PublicacionController pubController) {
         this.authController = authController;
         this.pubController = pubController;
+
+        // >>> CHAT - inicializar controlador de chat
+        ChatRepository chatRepository = new ChatFileRepository();
+        this.chatController = new ChatController(chatRepository);
+        // <<< CHAT
 
         setTitle("Mercado Local - Inicio");
         setSize(900, 600);
@@ -78,7 +99,34 @@ public class MainWindow extends JFrame {
         JPanel panelCentro = new JPanel(new BorderLayout());
         panelCentro.setBorder(BorderFactory.createTitledBorder(" Últimas Publicaciones "));
         panelCentro.add(new JScrollPane(listaVisual), BorderLayout.CENTER);
-        add(panelCentro, BorderLayout.CENTER);
+
+        // >>> CHAT - envolver centro en pestañas y agregar pestaña de chats
+        pestañasCentro = new JTabbedPane();
+        pestañasCentro.addTab("Publicaciones", panelCentro);
+
+        // Paneles de chat
+        panelListaChats = new PanelListaChats(chatController, new PanelListaChats.ChatSeleccionListener() {
+            @Override
+            public void abrirChat(Chat chatSeleccionado) {
+                panelChatDetalle.setChatActual(chatSeleccionado);
+                pestañasCentro.setSelectedIndex(1); // Cambiar a tab de Chats
+            }
+        });
+
+        panelChatDetalle = new PanelChatDetalle(chatController);
+
+        JSplitPane splitChats = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                panelListaChats,
+                panelChatDetalle
+        );
+        splitChats.setDividerLocation(300);
+
+        pestañasCentro.addTab("Chats", splitChats);
+
+        // Agregar pestañas al centro de la ventana
+        add(pestañasCentro, BorderLayout.CENTER);
+        // <<< CHAT
 
         // --- FOOTER: BOTONES DE ACCIÓN ---
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
@@ -239,5 +287,14 @@ public class MainWindow extends JFrame {
             lblBienvenida.setText("Bienvenido, Invitado");
             btnLoginLogout.setText("Iniciar Sesión");
         }
+
+        // >>> CHAT - actualizar paneles de chat según usuario
+        if (panelListaChats != null) {
+            panelListaChats.setUsuarioActual(usuarioLogueado);
+        }
+        if (panelChatDetalle != null) {
+            panelChatDetalle.setUsuarioActual(usuarioLogueado);
+        }
+        // <<< CHAT
     }
 }
