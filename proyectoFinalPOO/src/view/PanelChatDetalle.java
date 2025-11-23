@@ -14,6 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Panel que muestra el detalle de un chat (conversación) y permite
@@ -39,6 +40,8 @@ public class PanelChatDetalle extends JPanel {
     private JTextArea areaConversacion;
     private JTextField campoNuevoMensaje;
     private JButton botonEnviar;
+
+    private final DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("HH:mm");
 
     /**
      * Constructor principal del panel de detalle de chat.
@@ -71,22 +74,25 @@ public class PanelChatDetalle extends JPanel {
 
     /**
      * Establece el chat que se debe mostrar en el panel.
-     * Al asignar un nuevo chat, se recarga el área de conversación.
+     * Al asignar un nuevo chat, se recarga el área de conversación
+     * y se marca el chat como leído.
      *
      * @param chat Chat a visualizar.
      */
     public void setChatActual(Chat chat) {
         this.chatActual = chat;
+
+        if (chatActual != null) {
+            chatController.marcarChatComoLeido(chatActual);
+        }
+
         recargarConversacion();
     }
 
     // ---------------------------------------------------------
-    // Métodos privados de inicialización y UI
+    // Inicialización UI
     // ---------------------------------------------------------
 
-    /**
-     * Inicializa los componentes gráficos del panel.
-     */
     private void inicializarComponentes() {
         setLayout(new BorderLayout(5, 5));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -115,9 +121,6 @@ public class PanelChatDetalle extends JPanel {
         add(panelInferior, BorderLayout.SOUTH);
     }
 
-    /**
-     * Configura los manejadores de eventos para enviar mensajes.
-     */
     private void configurarEventos() {
         // Enviar al presionar el botón
         botonEnviar.addActionListener(e -> enviarMensajeDesdeCampo());
@@ -136,7 +139,6 @@ public class PanelChatDetalle extends JPanel {
      */
     private void enviarMensajeDesdeCampo() {
         if (chatActual == null) {
-            // No hay chat seleccionado
             return;
         }
         if (usuarioActual == null) {
@@ -149,11 +151,9 @@ public class PanelChatDetalle extends JPanel {
 
         String texto = campoNuevoMensaje.getText();
         if (texto == null || texto.isBlank()) {
-            // No enviar mensajes vacíos
             return;
         }
 
-        // Delegar la lógica de envío al controlador
         chatController.enviarMensaje(chatActual, usuarioActual, texto);
         campoNuevoMensaje.setText("");
         recargarConversacion();
@@ -161,7 +161,6 @@ public class PanelChatDetalle extends JPanel {
 
     /**
      * Recarga el área de conversación con todos los mensajes del chatActual.
-     * Si no hay chat seleccionado, el área se vacía.
      */
     private void recargarConversacion() {
         areaConversacion.setText("");
@@ -170,14 +169,15 @@ public class PanelChatDetalle extends JPanel {
             return;
         }
 
-        for (Mensaje mensaje : chatActual.getListaMensajes()) {
-            String nombreRemitente = mensaje.getUsuarioRemitente().getNombre();
+        for (Mensaje mensaje : chatController.obtenerMensajes(chatActual)) {
+            String nombre = mensaje.getUsuarioRemitente().getNombre();
+            String hora = mensaje.getFechaHoraEnvio().format(formatoHora);
             String contenido = mensaje.getContenidoMensaje();
 
-            areaConversacion.append(nombreRemitente + ": " + contenido + "\n");
+            areaConversacion.append(nombre + " (" + hora + "): " + contenido + "\n");
         }
 
-        // Mover el cursor al final del texto para que el scroll baje automáticamente
+        // Scroll automático al final
         areaConversacion.setCaretPosition(areaConversacion.getDocument().getLength());
     }
 }
