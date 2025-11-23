@@ -4,21 +4,25 @@ import util.EstadoOferta;
 
 import java.util.Date;
 
-public class Oferta {
-	
+import java.io.Serializable;
+
+public class Oferta implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private String idOferta;
 	private String idPublicacion;
 	private String idOfertante;
 	private Date fechaOferta;
-	
+
 	private double montoOferta; // Monto en dinero ofrecido
 	private String descripcionTrueque; // Descripción del trueque ofrecido
-	
+
 	private util.EstadoOferta estadoOferta;
-	
-	public Oferta(String idOferta, String idPublicacion, String idOfertante, 
-				Date fechaOferta, double montoOferta, 
-				String descripcionTrueque, EstadoOferta estadoOferta) {
+
+	public Oferta(String idOferta, String idPublicacion, String idOfertante,
+			Date fechaOferta, double montoOferta,
+			String descripcionTrueque, EstadoOferta estadoOferta) {
 		this.idOferta = idOferta;
 		this.idPublicacion = idPublicacion;
 		this.idOfertante = idOfertante;
@@ -27,8 +31,8 @@ public class Oferta {
 		this.descripcionTrueque = descripcionTrueque;
 	}
 
-	//Getters y setters
-	
+	// Getters y setters
+
 	public String getIdOferta() {
 		return idOferta;
 	}
@@ -84,5 +88,5 @@ public class Oferta {
 	public void setEstadoOferta(util.EstadoOferta estadoOferta) {
 		this.estadoOferta = estadoOferta;
 	}
-	
+
 }

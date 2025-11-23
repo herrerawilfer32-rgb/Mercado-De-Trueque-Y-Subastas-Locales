@@ -12,21 +12,22 @@ import java.util.List;
 public class MainWindow extends JFrame {
 
     private User usuarioLogueado = null; // INICIO: MODO INVITADO
-    
+
     private final AuthController authController;
     private final PublicacionController pubController;
 
     // Componentes UI
     private JLabel lblBienvenida;
     private JButton btnLoginLogout;
-    private DefaultListModel<String> listModel; // Modelo para la lista visual
+    private DefaultListModel<Publicacion> listModel; // Cambiado a Publicacion
+    private JList<Publicacion> listaVisual;
 
     public MainWindow(AuthController authController, PublicacionController pubController) {
         this.authController = authController;
         this.pubController = pubController;
 
         setTitle("Mercado Local - Inicio");
-        setSize(800, 600);
+        setSize(900, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -54,9 +55,26 @@ public class MainWindow extends JFrame {
 
         // --- CENTRO: LISTA DE PUBLICACIONES ---
         listModel = new DefaultListModel<>();
-        JList<String> listaVisual = new JList<>(listModel);
+        listaVisual = new JList<>(listModel);
         listaVisual.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        
+
+        // Renderizador personalizado para mostrar texto bonito
+        listaVisual.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+                    boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Publicacion) {
+                    Publicacion p = (Publicacion) value;
+                    setText(String.format("[%s] %s - %s ($%.2f)",
+                            p.getTipoPublicacion(), p.getTitulo(), p.getDescripcion(),
+                            (p instanceof model.PublicacionSubasta) ? ((model.PublicacionSubasta) p).getPrecioMinimo()
+                                    : 0.0));
+                }
+                return this;
+            }
+        });
+
         JPanel panelCentro = new JPanel(new BorderLayout());
         panelCentro.setBorder(BorderFactory.createTitledBorder(" Últimas Publicaciones "));
         panelCentro.add(new JScrollPane(listaVisual), BorderLayout.CENTER);
@@ -64,27 +82,42 @@ public class MainWindow extends JFrame {
 
         // --- FOOTER: BOTONES DE ACCIÓN ---
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        
+
         JButton btnVender = new JButton("💰 Publicar Artículo");
         JButton btnMisOfertas = new JButton("🤝 Ver Mis Ofertas");
         JButton btnRefrescar = new JButton("🔄 Actualizar Lista");
 
+        // Nuevos botones CRUD
+        JButton btnEditar = new JButton("✏️ Editar");
+        JButton btnEliminar = new JButton("🗑️ Eliminar");
+
         // LOGICA DEL "PORTERO" (GATEKEEPER)
         btnVender.addActionListener(e -> {
-            if (esInvitado()) abrirLogin(); 
-            else abrirFormularioVenta();
+            if (esInvitado())
+                abrirLogin();
+            else
+                abrirFormularioVenta();
         });
 
         btnMisOfertas.addActionListener(e -> {
-            if (esInvitado()) abrirLogin();
-            else JOptionPane.showMessageDialog(this, "Aquí verías tus ofertas (TODO)");
+            if (esInvitado())
+                abrirLogin();
+            else
+                JOptionPane.showMessageDialog(this, "Aquí verías tus ofertas (TODO)");
         });
 
         btnRefrescar.addActionListener(e -> cargarPublicaciones());
 
+        btnEliminar.addActionListener(e -> eliminarPublicacionSeleccionada());
+        btnEditar.addActionListener(e -> editarPublicacionSeleccionada());
+
         footer.add(btnVender);
         footer.add(btnMisOfertas);
         footer.add(btnRefrescar);
+        footer.add(new JSeparator(SwingConstants.VERTICAL));
+        footer.add(btnEditar);
+        footer.add(btnEliminar);
+
         add(footer, BorderLayout.SOUTH);
     }
 
@@ -93,17 +126,65 @@ public class MainWindow extends JFrame {
     public void cargarPublicaciones() {
         listModel.clear();
         List<Publicacion> lista = pubController.obtenerPublicacionesActivas();
-        
+
         if (lista.isEmpty()) {
-            listModel.addElement("No hay publicaciones activas aún.");
+            // No podemos agregar string al modelo de Publicacion, así que manejamos vacío
+            // visualmente o nada
         } else {
             for (Publicacion p : lista) {
-                // Formato simple para mostrar en la lista
-                String linea = String.format("[%s] %s - %s", 
-                        p.getTipoPublicacion(), p.getTitulo(), p.getDescripcion());
-                listModel.addElement(linea);
+                listModel.addElement(p);
             }
         }
+    }
+
+    private void eliminarPublicacionSeleccionada() {
+        if (esInvitado()) {
+            JOptionPane.showMessageDialog(this, "Debes iniciar sesión.");
+            return;
+        }
+
+        Publicacion seleccionada = listaVisual.getSelectedValue();
+        if (seleccionada == null) {
+            JOptionPane.showMessageDialog(this, "Selecciona una publicación primero.");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "¿Estás seguro de eliminar '" + seleccionada.getTitulo() + "'?", "Confirmar",
+                JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean exito = pubController.eliminarPublicacion(seleccionada.getIdArticulo(), usuarioLogueado.getId());
+            if (exito) {
+                JOptionPane.showMessageDialog(this, "Publicación eliminada.");
+                cargarPublicaciones();
+            } else {
+                JOptionPane.showMessageDialog(this, "No puedes eliminar esta publicación (No eres el dueño).", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void editarPublicacionSeleccionada() {
+        if (esInvitado()) {
+            JOptionPane.showMessageDialog(this, "Debes iniciar sesión.");
+            return;
+        }
+
+        Publicacion seleccionada = listaVisual.getSelectedValue();
+        if (seleccionada == null) {
+            JOptionPane.showMessageDialog(this, "Selecciona una publicación primero.");
+            return;
+        }
+
+        // Verificar dueño antes de abrir ventana
+        if (!seleccionada.getIdVendedor().equals(usuarioLogueado.getId())) {
+            JOptionPane.showMessageDialog(this, "No puedes editar esta publicación (No eres el dueño).", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Abrir ventana de edición
+        new EditarPublicacionView(pubController, usuarioLogueado, this, seleccionada).setVisible(true);
     }
 
     private boolean esInvitado() {

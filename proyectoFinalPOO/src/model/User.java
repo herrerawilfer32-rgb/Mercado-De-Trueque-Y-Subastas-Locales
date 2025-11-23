@@ -1,17 +1,29 @@
 package model;
 
-public class User {
-	
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class User implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private String nombreUsuario; // Identificador de Login
 	private String nombre;
 	private String apellido;
 	private String correo;
 	private String contraseñaHash;
 	private String id; // Identificador Único (Cédula)
-	private String ubicacion; 
-	
+	private String ubicacion;
+
+	// Nuevos atributos para Fase 3 (Social/Reputación)
+	private double reputacion; // Promedio 0.0 - 5.0
+	private int numeroCalificaciones;
+	private List<String> historialTransacciones;
+
 	// Método constructor
-	public User(String nombreUsuario, String nombre, String apellido, String correo, String contraseñaHash, String id, String ubicacion) {
+	public User(String nombreUsuario, String nombre, String apellido, String correo, String contraseñaHash, String id,
+			String ubicacion) {
 		this.nombreUsuario = nombreUsuario;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -19,6 +31,29 @@ public class User {
 		this.contraseñaHash = contraseñaHash;
 		this.id = id;
 		this.ubicacion = ubicacion;
+
+		// Inicialización de nuevos atributos
+		this.reputacion = 0.0;
+		this.numeroCalificaciones = 0;
+		this.historialTransacciones = new ArrayList<>();
+	}
+
+	// Métodos de Lógica de Negocio (Dominio)
+
+	public void calificar(int estrellas) {
+		if (estrellas < 1 || estrellas > 5)
+			return;
+
+		double totalPuntos = (this.reputacion * this.numeroCalificaciones) + estrellas;
+		this.numeroCalificaciones++;
+		this.reputacion = totalPuntos / this.numeroCalificaciones;
+	}
+
+	public void agregarTransaccion(String idPublicacion) {
+		if (this.historialTransacciones == null) {
+			this.historialTransacciones = new ArrayList<>();
+		}
+		this.historialTransacciones.add(idPublicacion);
 	}
 
 	// Getters y Setters
@@ -73,8 +108,20 @@ public class User {
 	public String getUbicacion() {
 		return ubicacion;
 	}
-	
+
 	public void setUbicacion(String ubicacion) {
 		this.ubicacion = ubicacion;
+	}
+
+	public double getReputacion() {
+		return reputacion;
+	}
+
+	public int getNumeroCalificaciones() {
+		return numeroCalificaciones;
+	}
+
+	public List<String> getHistorialTransacciones() {
+		return historialTransacciones;
 	}
 }
