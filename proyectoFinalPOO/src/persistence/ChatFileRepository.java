@@ -15,7 +15,7 @@ import model.chat.Chat;
 public class ChatFileRepository implements ChatRepository {
     
     // Lista interna que simula la persistencia
-    private List<Chat> listaChats;
+    private final List<Chat> listaChats;
     
     /**
      * Constructor principal. Inicializa la estructura interna.
@@ -25,22 +25,24 @@ public class ChatFileRepository implements ChatRepository {
     }
     
     @Override
-    public void guardarChat(Chat chat) {
+    public synchronized void guardarChat(Chat chat) {
         if (chat == null) {
             return;
         }
         
         // Verificar si ya existe un chat con el mismo identificador
         Chat chatExistente = buscarChatPorIdentificador(chat.getIdentificadorChat());
+        
         if (chatExistente == null) {
             listaChats.add(chat);
         }
+        // Si ya existe, no se hace nada: el objeto ya se modificó en memoria
         
         // TODO: Persistir información en archivo (lectura/escritura)
     }
     
     @Override
-    public Chat buscarChatEntreUsuarios(User usuarioA, User usuarioB) {
+    public synchronized Chat buscarChatEntreUsuarios(User usuarioA, User usuarioB) {
         if (usuarioA == null || usuarioB == null) {
             return null;
         }
@@ -58,7 +60,7 @@ public class ChatFileRepository implements ChatRepository {
     }
     
     @Override
-    public List<Chat> listarChatsDeUsuario(User usuario) {
+    public synchronized List<Chat> listarChatsDeUsuario(User usuario) {
         List<Chat> resultado = new ArrayList<>();
         
         if (usuario == null) {
@@ -93,5 +95,13 @@ public class ChatFileRepository implements ChatRepository {
             }
         }
         return null;
+    }
+    
+    /**
+     * Retorna una copia de todos los chats.
+     * Útil para depuración o funciones administrativas.
+     */
+    public List<Chat> obtenerTodos() {
+        return new ArrayList<>(listaChats);
     }
 }
