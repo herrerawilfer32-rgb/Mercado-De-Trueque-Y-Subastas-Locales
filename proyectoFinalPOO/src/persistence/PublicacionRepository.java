@@ -17,9 +17,12 @@ public class PublicacionRepository {
 	private static Map<String, Publicacion> baseDeDatos = new HashMap<>();
 	private static final String RUTA_ARCHIVO = "publicaciones.dat";
 
-	static {
+	public PublicacionRepository() {
 		try {
-			baseDeDatos = (Map<String, Publicacion>) Persistencia.cargarObjeto(RUTA_ARCHIVO);
+			@SuppressWarnings("unchecked")
+			Map<String, Publicacion> loaded = (Map<String, Publicacion>) Persistencia.cargarObjeto(RUTA_ARCHIVO);
+			if (loaded != null)
+				baseDeDatos = loaded;
 		} catch (Exception e) {
 			baseDeDatos = new HashMap<>();
 		}

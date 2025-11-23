@@ -81,6 +81,9 @@ public abstract class Publicacion implements Serializable {
 	}
 
 	public List<String> getFotosPaths() {
+		if (fotosPaths == null) {
+			return new java.util.ArrayList<>();
+		}
 		return fotosPaths;
 	}
 

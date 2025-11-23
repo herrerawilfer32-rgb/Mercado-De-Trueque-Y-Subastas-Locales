@@ -7,7 +7,7 @@ import java.awt.*;
 public class RegisterWindow extends JFrame {
 
     private final AuthController authController;
-    private final LoginWindow loginWindow;
+    // private final LoginWindow loginWindow; // Removed unused field
 
     private JTextField txtId;
     private JTextField txtUsername;
@@ -19,7 +19,7 @@ public class RegisterWindow extends JFrame {
 
     public RegisterWindow(AuthController authController, LoginWindow loginWindow) {
         this.authController = authController;
-        this.loginWindow = loginWindow;
+        // this.loginWindow = loginWindow;
 
         setTitle("Registro de Usuario");
         setSize(400, 500);

@@ -88,6 +88,7 @@ public class MainWindow extends JFrame {
         JButton btnRefrescar = new JButton("🔄 Actualizar Lista");
 
         // Nuevos botones CRUD
+        JButton btnVerDetalle = new JButton("👁️ Ver Detalle");
         JButton btnEditar = new JButton("✏️ Editar");
         JButton btnEliminar = new JButton("🗑️ Eliminar");
 
@@ -103,11 +104,12 @@ public class MainWindow extends JFrame {
             if (esInvitado())
                 abrirLogin();
             else
-                JOptionPane.showMessageDialog(this, "Aquí verías tus ofertas (TODO)");
+                new MisOfertasView(pubController, usuarioLogueado).setVisible(true);
         });
 
         btnRefrescar.addActionListener(e -> cargarPublicaciones());
 
+        btnVerDetalle.addActionListener(e -> verDetalleSeleccionado());
         btnEliminar.addActionListener(e -> eliminarPublicacionSeleccionada());
         btnEditar.addActionListener(e -> editarPublicacionSeleccionada());
 
@@ -115,6 +117,7 @@ public class MainWindow extends JFrame {
         footer.add(btnMisOfertas);
         footer.add(btnRefrescar);
         footer.add(new JSeparator(SwingConstants.VERTICAL));
+        footer.add(btnVerDetalle);
         footer.add(btnEditar);
         footer.add(btnEliminar);
 
@@ -135,6 +138,21 @@ public class MainWindow extends JFrame {
                 listModel.addElement(p);
             }
         }
+    }
+
+    private void verDetalleSeleccionado() {
+        if (esInvitado()) {
+            JOptionPane.showMessageDialog(this, "Debes iniciar sesión para ver detalles y ofertar.");
+            return;
+        }
+
+        Publicacion seleccionada = listaVisual.getSelectedValue();
+        if (seleccionada == null) {
+            JOptionPane.showMessageDialog(this, "Selecciona una publicación primero.");
+            return;
+        }
+
+        new DetallePublicacionView(pubController, seleccionada, usuarioLogueado).setVisible(true);
     }
 
     private void eliminarPublicacionSeleccionada() {

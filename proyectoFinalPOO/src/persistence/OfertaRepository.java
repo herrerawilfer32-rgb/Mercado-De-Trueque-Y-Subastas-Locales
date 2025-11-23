@@ -19,9 +19,12 @@ public class OfertaRepository {
 	// HashMap<String, List<Oferta>
 	private static Map<String, List<Oferta>> indicePorPublicacion = new HashMap<>();
 
-	static {
+	public OfertaRepository() {
 		try {
-			baseDeDatos = (Map<String, Oferta>) Persistencia.cargarObjeto(RUTA_ARCHIVO);
+			@SuppressWarnings("unchecked")
+			Map<String, Oferta> loaded = (Map<String, Oferta>) Persistencia.cargarObjeto(RUTA_ARCHIVO);
+			if (loaded != null)
+				baseDeDatos = loaded;
 			// Reconstruir índice secundario
 			reconstruirIndice();
 		} catch (Exception e) {
@@ -91,5 +94,22 @@ public class OfertaRepository {
 	// Buscar ofertas por idPublicacion
 	public List<Oferta> buscarPorPublicacion(String idPublicacion) {
 		return indicePorPublicacion.getOrDefault(idPublicacion, new ArrayList<>());
+	}
+
+	public void eliminar(String idOferta) {
+		Oferta oferta = baseDeDatos.remove(idOferta);
+		if (oferta != null) {
+			// Eliminar del índice secundario
+			String idPub = oferta.getIdPublicacion();
+			if (indicePorPublicacion.containsKey(idPub)) {
+				indicePorPublicacion.get(idPub).remove(oferta);
+			}
+			// Guardar cambios
+			try {
+				Persistencia.guardarObjeto(RUTA_ARCHIVO, baseDeDatos);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

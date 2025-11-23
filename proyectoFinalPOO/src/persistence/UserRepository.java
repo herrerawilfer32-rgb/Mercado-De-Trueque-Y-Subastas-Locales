@@ -14,7 +14,9 @@ public class UserRepository {
     static {
         try {
             // Intentamos cargar los datos del archivo
-            baseDeDatos = (Map<String, User>) Persistencia.cargarObjeto(RUTA_ARCHIVO);
+            @SuppressWarnings("unchecked")
+            Map<String, User> loaded = (Map<String, User>) Persistencia.cargarObjeto(RUTA_ARCHIVO);
+            baseDeDatos = loaded;
         } catch (Exception e) {
             // Si falla (ej. primera vez), inicializamos y cargamos datos dummy
             baseDeDatos = new HashMap<>();
@@ -34,6 +36,27 @@ public class UserRepository {
                 Persistencia.guardarObjeto(RUTA_ARCHIVO, baseDeDatos);
             } catch (IOException ex) {
                 ex.printStackTrace();
+            }
+        }
+    }
+
+    public UserRepository() {
+        // Constructor vacío, la carga se hace en el bloque estático o aquí si
+        // preferimos
+        // Pero para mantener consistencia con el código anterior, lo dejamos así o lo
+        // movemos al constructor.
+        // El código original lo tenía en el constructor, pero el bloque estático es
+        // mejor para "base de datos estática".
+        // Sin embargo, para evitar problemas de recarga, vamos a asegurarnos de que se
+        // cargue.
+        if (baseDeDatos.isEmpty()) {
+            try {
+                @SuppressWarnings("unchecked")
+                Map<String, User> loaded = (Map<String, User>) Persistencia.cargarObjeto(RUTA_ARCHIVO);
+                if (loaded != null)
+                    baseDeDatos = loaded;
+            } catch (Exception e) {
+                // Ignorar si falla carga inicial
             }
         }
     }

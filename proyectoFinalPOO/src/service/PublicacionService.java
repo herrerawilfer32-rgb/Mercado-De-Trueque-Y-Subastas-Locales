@@ -10,10 +10,13 @@ public class PublicacionService {
 
     private final PublicacionRepository publicacionRepository;
     private final UserService userService;
+    private final persistence.OfertaRepository ofertaRepository;
 
-    public PublicacionService(PublicacionRepository publicacionRepository, UserService userService) {
+    public PublicacionService(PublicacionRepository publicacionRepository, UserService userService,
+            persistence.OfertaRepository ofertaRepository) {
         this.publicacionRepository = publicacionRepository;
         this.userService = userService;
+        this.ofertaRepository = ofertaRepository;
     }
 
     /*
@@ -84,6 +87,68 @@ public class PublicacionService {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Cierra una subasta y determina el ganador.
+     */
+    public void cerrarSubasta(String idPublicacion, String idVendedor) {
+        Publicacion publicacion = publicacionRepository.buscarPorIdArticulo(idPublicacion);
+
+        if (publicacion == null || !publicacion.getIdVendedor().equals(idVendedor)) {
+            throw new IllegalArgumentException("Publicación no encontrada o no pertenece al vendedor.");
+        }
+
+        if (publicacion.getTipoPublicacion() != util.TipoPublicacion.SUBASTA) {
+            throw new IllegalArgumentException("Esta publicación no es una subasta.");
+        }
+
+        // Buscar la mejor oferta
+        List<model.Oferta> ofertas = ofertaRepository.buscarPorPublicacion(idPublicacion);
+        model.Oferta mejorOferta = null;
+
+        for (model.Oferta oferta : ofertas) {
+            if (mejorOferta == null || oferta.getMontoOferta() > mejorOferta.getMontoOferta()) {
+                mejorOferta = oferta;
+            }
+        }
+
+        if (mejorOferta != null) {
+            mejorOferta.setEstadoOferta(util.EstadoOferta.GANADORA);
+            ofertaRepository.guardar(mejorOferta);
+            System.out.println("Subasta cerrada. Ganador: " + mejorOferta.getIdOfertante());
+        } else {
+            System.out.println("Subasta cerrada sin ofertas.");
+        }
+
+        publicacion.setEstado(util.EstadoPublicacion.CERRADA);
+        publicacionRepository.guardar(publicacion);
+    }
+
+    public List<Publicacion> recomendarTrueques(String idPublicacion) {
+        Publicacion publicacion = publicacionRepository.buscarPorIdArticulo(idPublicacion);
+        if (publicacion == null || publicacion.getTipoPublicacion() != util.TipoPublicacion.TRUEQUE) {
+            return java.util.Collections.emptyList();
+        }
+
+        model.PublicacionTrueque trueque = (model.PublicacionTrueque) publicacion;
+        String deseos = trueque.getObjetosDeseados().toLowerCase();
+
+        // Búsqueda simple: buscar publicaciones activas cuyo título contenga alguna
+        // palabra de los deseos
+        List<Publicacion> activas = publicacionRepository.buscarPublicacionesActivas();
+        List<Publicacion> recomendaciones = new java.util.ArrayList<>();
+
+        for (Publicacion p : activas) {
+            if (p.getIdArticulo().equals(idPublicacion))
+                continue; // No recomendarse a sí mismo
+
+            if (deseos.contains(p.getTitulo().toLowerCase())) {
+                recomendaciones.add(p);
+            }
+        }
+
+        return recomendaciones;
     }
 
     /**

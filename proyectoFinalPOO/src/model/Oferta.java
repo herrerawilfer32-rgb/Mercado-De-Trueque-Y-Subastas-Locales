@@ -29,6 +29,7 @@ public class Oferta implements Serializable {
 		this.fechaOferta = fechaOferta;
 		this.montoOferta = montoOferta;
 		this.descripcionTrueque = descripcionTrueque;
+		this.estadoOferta = estadoOferta;
 	}
 
 	// Getters y setters
@@ -82,6 +83,9 @@ public class Oferta implements Serializable {
 	}
 
 	public util.EstadoOferta getEstadoOferta() {
+		if (estadoOferta == null) {
+			return util.EstadoOferta.PENDIENTE;
+		}
 		return estadoOferta;
 	}
 
