@@ -27,9 +27,7 @@ public class Chat {
      * @param usuarioEmisor Usuario que inicia o crea el chat.
      * @param usuarioReceptor Usuario con quien se establece la conversación.
      */
-    public Chat(String identificadorChat,
-                User usuarioEmisor,
-                User usuarioReceptor) {
+    public Chat(String identificadorChat, User usuarioEmisor, User usuarioReceptor) {
         
         if (identificadorChat == null || identificadorChat.isBlank()) {
             throw new IllegalArgumentException("El identificador del chat no puede ser nulo ni vacío.");
@@ -48,7 +46,9 @@ public class Chat {
         this.tieneMensajesNoLeidos = false;
     }
     
-    // Métodos públicos de negocio
+    // ---------------------------------------------------------
+    // MÉTODOS DE NEGOCIO
+    // ---------------------------------------------------------
     
     /**
      * Agrega un nuevo mensaje al chat.
@@ -57,9 +57,7 @@ public class Chat {
      * @param mensaje Mensaje a agregar al chat.
      */
     public void agregarMensaje(Mensaje mensaje) {
-        if (mensaje == null) {
-            return;
-        }
+        if (mensaje == null) return;
         this.listaMensajes.add(mensaje);
         this.tieneMensajesNoLeidos = true;
     }
@@ -69,6 +67,32 @@ public class Chat {
      */
     public void marcarMensajesComoLeidos() {
         this.tieneMensajesNoLeidos = false;
+    }
+
+    /**
+     * Retorna el último mensaje del chat (o null si no hay mensajes).
+     */
+    public Mensaje getUltimoMensaje() {
+        if (listaMensajes.isEmpty()) {
+            return null;
+        }
+        return listaMensajes.get(listaMensajes.size() - 1);
+    }
+
+    /**
+     * Dado un usuario, retorna la contraparte del chat.
+     * Si el usuario no pertenece al chat, retorna null.
+     */
+    public User obtenerOtroUsuario(User usuarioActual) {
+        if (usuarioActual == null) return null;
+        
+        if (usuarioActual.equals(usuarioEmisor)) {
+            return usuarioReceptor;
+        }
+        if (usuarioActual.equals(usuarioReceptor)) {
+            return usuarioEmisor;
+        }
+        return null; // No pertenece al chat
     }
     
     /**
@@ -80,7 +104,9 @@ public class Chat {
         return Collections.unmodifiableList(listaMensajes);
     }
     
-    // Getters y setters básicos
+    // ---------------------------------------------------------
+    // GETTERS
+    // ---------------------------------------------------------
     
     public String getIdentificadorChat() {
         return identificadorChat;
