@@ -128,16 +128,25 @@ public class CrearPublicacionView extends JFrame {
 
         if (tipo.equals("SUBASTA")) {
             try {
-                double precio = Double.parseDouble(txtPrecio.getText());
-                exito = controller.crearSubasta(titulo, desc, vendedor, precio, 7, fotosSeleccionadas); // 7 días por
-                                                                                                        // defecto
+               double precio = Double.parseDouble(txtPrecio.getText());
+            	exito = controlador.crearSubasta(
+            	        titulo,
+            	        desc,
+            	        vendedor,
+            	        precio,
+            	        7,                 // días de duración
+            	        new ArrayList<>()  // por ahora, sin fotos
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "El precio debe ser un número.");
                 return;
             }
         } else {
-            String deseos = txtDeseos.getText();
-            exito = controller.crearTrueque(titulo, desc, vendedor, deseos, fotosSeleccionadas);
+            exito = controlador.crearTrueque(
+        	        titulo,
+        	        desc,
+        	        vendedor,
+        	        deseos,
+        	        new ArrayList<>() // por ahora, sin fotos
         }
 
         if (exito) {
