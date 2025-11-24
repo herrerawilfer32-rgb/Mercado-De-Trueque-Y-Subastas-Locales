@@ -20,15 +20,21 @@ public class MainApp {
             PublicacionRepository pubRepo = new PublicacionRepository();
             OfertaRepository ofertaRepo = new OfertaRepository();
 
-            // 2. Servicios
+           // 2. Servicios
             UserService userService = new UserService(userRepo);
             PublicacionService pubService = new PublicacionService(pubRepo, userService, ofertaRepo);
             OfertaService ofertaService = new OfertaService(ofertaRepo, userService, pubService);
 
-            // 3. Controladores
+
+           // 3. Controladores
             AuthController authController = new AuthController(userService);
-            // Nuevo controlador para las publicaciones
+            // Controlador para las publicaciones (usa también ofertas)
             PublicacionController pubController = new PublicacionController(pubService, ofertaService);
+            
+            // Este ChatController creado aquí realmente no se usa, puedes quitarlo
+            // o dejarlo si luego piensas usarlo.
+            // ChatController chatController = new ChatController(chatRepository);
+
 
             // 4. Vista Principal
             // Le pasamos ambos controladores para que pueda manejar Login y Publicaciones
