@@ -166,4 +166,14 @@ public class PublicacionService {
         }
         return false;
     }
+    /**
+     * Elimina una publicación por su identificador.
+     *
+     * @param idPublicacion Identificador de la publicación a eliminar.
+     */
+    public void eliminar(String idPublicacion) {
+        if (idPublicacion == null) {
+            return;
+        }
+        baseDeDatos.remove(idPublicacion);
 }
