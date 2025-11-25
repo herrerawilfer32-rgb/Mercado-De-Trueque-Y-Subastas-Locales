@@ -1,185 +1,288 @@
-package service;
+package view;
 
-import java.util.List;
-
-import model.Publicacion;
-import model.PublicacionTrueque;
+import controller.PublicacionController;
 import model.User;
-import persistence.OfertaRepository;
-import persistence.PublicacionRepository;
-import util.EstadoOferta;
-import util.EstadoPublicacion;
-import util.TipoPublicacion;
 
-/**
- * Servicio de negocio para manejar publicaciones.
- */
-public class PublicacionService {
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
-    private final PublicacionRepository publicacionRepository;
-    private final UserService userService;
-    private final OfertaRepository ofertaRepository;
+public class CrearPublicacionView extends JFrame {
 
-    public PublicacionService(PublicacionRepository publicacionRepository,
-                              UserService userService,
-                              OfertaRepository ofertaRepository) {
-        this.publicacionRepository = publicacionRepository;
-        this.userService = userService;
-        this.ofertaRepository = ofertaRepository;
+    private final PublicacionController controller;
+    private final User vendedor;
+    private final MainWindow mainWindow; // Para refrescar la lista al terminar
+
+    private JTextField txtTitulo, txtPrecio;
+    private JTextArea txtDescripcion, txtDeseos;
+    private JComboBox<String> cmbTipo;
+    private JPanel panelDinamico;
+    private CardLayout cardLayout;
+    private java.util.List<String> fotosSeleccionadas; // Lista de rutas de fotos
+    private JPanel panelPreviewFotos; // Panel para mostrar previews
+
+    public CrearPublicacionView(PublicacionController controller, User vendedor, MainWindow mainWindow) {
+        this.controller = controller;
+        this.vendedor = vendedor;
+        this.mainWindow = mainWindow;
+
+        setTitle("Nueva Publicación");
+        setSize(500, 650);
+        setLocationRelativeTo(mainWindow);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        fotosSeleccionadas = new ArrayList<>();
+
+        initComponents();
     }
 
-    /**
-     * Guarda una publicación nueva.
-     */
-    public void guardarPublicacion(Publicacion publicacion) {
-        if (publicacion == null) {
-            throw new IllegalArgumentException("La publicación no puede ser nula.");
-        }
-        publicacionRepository.guardar(publicacion);
+    private void initComponents() {
+        // --- Formulario Común ---
+        JPanel panelForm = new JPanel(new GridLayout(0, 1, 5, 5));
+        panelForm.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        panelForm.add(new JLabel("Título del Artículo:"));
+        txtTitulo = new JTextField();
+        panelForm.add(txtTitulo);
+
+        panelForm.add(new JLabel("Descripción:"));
+        txtDescripcion = new JTextArea(3, 20);
+        panelForm.add(new JScrollPane(txtDescripcion));
+
+        panelForm.add(new JLabel("Tipo de Publicación:"));
+        cmbTipo = new JComboBox<>(new String[] { "SUBASTA", "TRUEQUE" });
+        panelForm.add(cmbTipo);
+
+        // --- Panel Dinámico (Cambia según el combo) ---
+        cardLayout = new CardLayout();
+        panelDinamico = new JPanel(cardLayout);
+
+        // Opción A: Panel Subasta
+        JPanel panelSubasta = new JPanel(new GridLayout(0, 1));
+        panelSubasta.add(new JLabel("Precio Mínimo ($):"));
+        txtPrecio = new JTextField();
+        panelSubasta.add(txtPrecio);
+        panelDinamico.add(panelSubasta, "SUBASTA");
+
+        // Opción B: Panel Trueque
+        JPanel panelTrueque = new JPanel(new GridLayout(0, 1));
+        panelTrueque.add(new JLabel("¿Qué buscas a cambio?"));
+        txtDeseos = new JTextArea(2, 20);
+        panelTrueque.add(new JScrollPane(txtDeseos));
+        panelDinamico.add(panelTrueque, "TRUEQUE");
+
+        panelForm.add(panelDinamico);
+
+        // --- Sección de Fotos ---
+        panelForm.add(new JLabel("Fotos del Artículo:"));
+
+        JButton btnAgregarFoto = new JButton("📷 Seleccionar Imágenes");
+        btnAgregarFoto.addActionListener(e -> seleccionarImagenes());
+        panelForm.add(btnAgregarFoto);
+
+        // Panel para mostrar previews de fotos
+        panelPreviewFotos = new JPanel();
+        panelPreviewFotos.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        panelPreviewFotos.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        panelPreviewFotos.setPreferredSize(new Dimension(380, 100));
+        panelForm.add(new JScrollPane(panelPreviewFotos));
+
+        // Listener para cambiar campos
+        cmbTipo.addActionListener(e -> cardLayout.show(panelDinamico, (String) cmbTipo.getSelectedItem()));
+
+        add(panelForm, BorderLayout.CENTER);
+
+        // --- Botón Guardar ---
+        JButton btnPublicar = new JButton("PUBLICAR AHORA");
+        btnPublicar.setBackground(new Color(46, 204, 113));
+        btnPublicar.setForeground(Color.WHITE);
+        btnPublicar.setFont(new Font("Arial", Font.BOLD, 14));
+
+        btnPublicar.addActionListener(e -> manejarPublicacion());
+        add(btnPublicar, BorderLayout.SOUTH);
     }
 
-    /**
-     * Busca todas las publicaciones activas.
-     */
-    public List<Publicacion> buscarPublicacionesActivas() {
-        return publicacionRepository.buscarPublicacionesActivas();
-    }
+    private void seleccionarImagenes() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setMultiSelectionEnabled(true);
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                "Imágenes", "jpg", "jpeg", "png", "gif", "bmp"));
 
-    /**
-     * Busca una publicación por su ID.
-     */
-    public Publicacion buscarPublicacionPorId(String idPublicacion) {
-        if (idPublicacion == null || idPublicacion.isBlank()) {
-            throw new IllegalArgumentException("El id de la publicación no puede ser nulo o vacío.");
-        }
-        return publicacionRepository.buscarPorIdArticulo(idPublicacion);
-    }
+        int resultado = fileChooser.showOpenDialog(this);
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            java.io.File[] archivos = fileChooser.getSelectedFiles();
 
-    /**
-     * Devuelve el usuario vendedor (dueño) de una publicación.
-     */
-    public User obtenerVendedorDePublicacion(String idPublicacion) {
-        Publicacion publicacion = buscarPublicacionPorId(idPublicacion);
-        if (publicacion == null) {
-            throw new IllegalArgumentException("La publicación no existe.");
-        }
-        // 🔧 AQUÍ ESTABA EL ERROR: el método correcto es buscarUsuarioPorId(...)
-        return userService.buscarUsuarioPorId(publicacion.getIdVendedor());
-    }
-
-    /**
-     * Elimina una publicación si el usuario solicitante es el dueño.
-     * En lugar de borrarla físicamente, marca su estado como ELIMINADA.
-     */
-    public boolean eliminarPublicacion(String idPublicacion, String idUsuarioSolicitante) {
-        if (idPublicacion == null || idPublicacion.isBlank()) {
-            throw new IllegalArgumentException("El id de la publicación no puede ser nulo ni vacío.");
-        }
-        if (idUsuarioSolicitante == null || idUsuarioSolicitante.isBlank()) {
-            throw new IllegalArgumentException("El id del usuario no puede ser nulo ni vacío.");
-        }
-
-        Publicacion pub = publicacionRepository.buscarPorIdArticulo(idPublicacion);
-        if (pub != null && pub.getIdVendedor().equals(idUsuarioSolicitante)) {
-            pub.setEstado(EstadoPublicacion.ELIMINADA);
-            publicacionRepository.guardar(pub);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Cierra una subasta: valida dueño y tipo SUBASTA, busca la mejor oferta,
-     * la marca como ACEPTADA y cambia el estado de la publicación a CERRADA.
-     */
-    public void cerrarSubasta(String idPublicacion, String idVendedor) {
-        Publicacion publicacion = publicacionRepository.buscarPorIdArticulo(idPublicacion);
-
-        if (publicacion == null || !publicacion.getIdVendedor().equals(idVendedor)) {
-            throw new IllegalArgumentException("Publicación no encontrada o no pertenece al vendedor.");
-        }
-
-        if (publicacion.getTipoPublicacion() != TipoPublicacion.SUBASTA) {
-            throw new IllegalArgumentException("Esta publicación no es una subasta.");
-        }
-
-        // Buscar la mejor oferta (mayor monto)
-        List<model.Oferta> ofertas = ofertaRepository.buscarPorPublicacion(idPublicacion);
-        model.Oferta mejorOferta = null;
-
-        for (model.Oferta oferta : ofertas) {
-            if (mejorOferta == null || oferta.getMontoOferta() > mejorOferta.getMontoOferta()) {
-                mejorOferta = oferta;
+            for (java.io.File archivo : archivos) {
+                fotosSeleccionadas.add(archivo.getAbsolutePath());
             }
+
+            actualizarPreviewFotos();
+        }
+    }
+
+    private void actualizarPreviewFotos() {
+        panelPreviewFotos.removeAll();
+
+        for (int i = 0; i < fotosSeleccionadas.size(); i++) {
+            final int index = i;
+            String ruta = fotosSeleccionadas.get(i);
+
+            JPanel cardFoto = new JPanel(new BorderLayout());
+            cardFoto.setPreferredSize(new Dimension(80, 80));
+            cardFoto.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+            // Cargar y mostrar preview
+            javax.swing.ImageIcon icon = util.ImageUtils.loadImage(ruta, 75, 75);
+            JLabel lblFoto = new JLabel(icon);
+            lblFoto.setHorizontalAlignment(SwingConstants.CENTER);
+
+            // Botón para eliminar
+            JButton btnEliminar = new JButton("X");
+            btnEliminar.setFont(new Font("Arial", Font.BOLD, 10));
+            btnEliminar.setPreferredSize(new Dimension(20, 20));
+            btnEliminar.setMargin(new Insets(0, 0, 0, 0));
+            btnEliminar.addActionListener(e -> {
+                fotosSeleccionadas.remove(index);
+                actualizarPreviewFotos();
+            });
+
+            cardFoto.add(lblFoto, BorderLayout.CENTER);
+            cardFoto.add(btnEliminar, BorderLayout.NORTH);
+
+            panelPreviewFotos.add(cardFoto);
         }
 
-        if (mejorOferta != null) {
-            // Antes: EstadoOferta.GANADORA (no existía en el enum)
-            mejorOferta.setEstadoOferta(EstadoOferta.ACEPTADA);
-            ofertaRepository.guardar(mejorOferta);
-            System.out.println("Subasta cerrada. Ganador: " + mejorOferta.getIdOfertante());
+        panelPreviewFotos.revalidate();
+        panelPreviewFotos.repaint();
+    }
+
+    private void manejarPublicacion() {
+        String titulo = txtTitulo.getText().trim();
+        String desc = txtDescripcion.getText().trim();
+        String tipo = (String) cmbTipo.getSelectedItem();
+
+        // Validar campos comunes
+        String errorMessage = validarCamposComunes(titulo, desc);
+        if (errorMessage != null) {
+            JOptionPane.showMessageDialog(this, errorMessage, "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        boolean exito = false;
+
+        if (tipo.equals("SUBASTA")) {
+            String precioTexto = txtPrecio.getText().trim();
+
+            // Validar precio
+            errorMessage = validarPrecioSubasta(precioTexto);
+            if (errorMessage != null) {
+                JOptionPane.showMessageDialog(this, errorMessage, "Error de Validación", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            double precio = Double.parseDouble(precioTexto);
+            exito = controller.crearSubasta(
+                    titulo,
+                    desc,
+                    vendedor,
+                    precio,
+                    7, // días de duración
+                    new ArrayList<>(fotosSeleccionadas));
         } else {
-            System.out.println("Subasta cerrada sin ofertas.");
-        }
+            String deseos = txtDeseos.getText().trim();
 
-        publicacion.setEstado(EstadoPublicacion.CERRADA);
-        publicacionRepository.guardar(publicacion);
-    }
-
-    /**
-     * Recomienda posibles trueques para una publicación de tipo TRUEQUE.
-     */
-    public List<Publicacion> recomendarTrueques(String idPublicacion) {
-        Publicacion publicacion = publicacionRepository.buscarPorIdArticulo(idPublicacion);
-        if (publicacion == null || publicacion.getTipoPublicacion() != TipoPublicacion.TRUEQUE) {
-            return java.util.Collections.emptyList();
-        }
-
-        PublicacionTrueque trueque = (PublicacionTrueque) publicacion;
-        String deseos = trueque.getObjetosDeseados().toLowerCase();
-
-        // Búsqueda simple: publicaciones activas cuyo título contenga el texto de deseos
-        List<Publicacion> activas = publicacionRepository.buscarPublicacionesActivas();
-        List<Publicacion> recomendaciones = new java.util.ArrayList<>();
-
-        for (Publicacion p : activas) {
-            if (p.getIdArticulo().equals(idPublicacion)) {
-                continue; // No recomendarse a sí misma
+            // Validar qué busca
+            errorMessage = validarDeseosTrueque(deseos);
+            if (errorMessage != null) {
+                JOptionPane.showMessageDialog(this, errorMessage, "Error de Validación", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-            if (deseos.contains(p.getTitulo().toLowerCase())) {
-                recomendaciones.add(p);
+
+            exito = controller.crearTrueque(
+                    titulo,
+                    desc,
+                    vendedor,
+                    deseos,
+                    new ArrayList<>(fotosSeleccionadas));
+        }
+
+        if (exito) {
+            // Advertencia si no hay fotos
+            if (fotosSeleccionadas.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "Artículo publicado con éxito.\nNota: No agregaste fotos. Se recomienda agregar imágenes para atraer más compradores.",
+                        "Publicación Exitosa",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "¡Artículo publicado con éxito!");
             }
-        }
-
-        return recomendaciones;
-    }
-
-    /**
-     * Cierra una publicación cambiando su estado a CERRADA (no solo subastas).
-     */
-    public void cerrarPublicacion(String idPublicacion) {
-        Publicacion publicacion = publicacionRepository.buscarPorIdArticulo(idPublicacion);
-
-        if (publicacion != null) {
-            publicacion.setEstado(EstadoPublicacion.CERRADA);
-            publicacionRepository.guardar(publicacion);
+            mainWindow.cargarPublicaciones();
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al guardar la publicación.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     /**
-     * Actualiza una publicación si el usuario solicitante es el dueño.
+     * Valida los campos comunes (título y descripción).
      */
-    public boolean actualizarPublicacion(Publicacion publicacion, String idUsuarioSolicitante) {
-        if (publicacion == null) {
-            throw new IllegalArgumentException("La publicación no puede ser nula.");
+    private String validarCamposComunes(String titulo, String desc) {
+        // Validar título
+        if (!util.ValidationUtils.isNotEmpty(titulo)) {
+            return "El título es obligatorio";
+        }
+        if (!util.ValidationUtils.isLengthInRange(titulo, 5, 100)) {
+            return "El título debe tener entre 5 y 100 caracteres";
         }
 
-        Publicacion pubExistente = publicacionRepository.buscarPorIdArticulo(publicacion.getIdArticulo());
-
-        if (pubExistente != null && pubExistente.getIdVendedor().equals(idUsuarioSolicitante)) {
-            publicacionRepository.guardar(publicacion);
-            return true;
+        // Validar descripción
+        if (!util.ValidationUtils.isNotEmpty(desc)) {
+            return "La descripción es obligatoria";
         }
-        return false;
+        if (!util.ValidationUtils.isLengthInRange(desc, 10, 500)) {
+            return "La descripción debe tener entre 10 y 500 caracteres";
+        }
+
+        return null;
+    }
+
+    /**
+     * Valida el precio para subastas.
+     */
+    private String validarPrecioSubasta(String precioTexto) {
+        if (!util.ValidationUtils.isNotEmpty(precioTexto)) {
+            return "El precio mínimo es obligatorio";
+        }
+
+        Double precio = util.ValidationUtils.tryParseDouble(precioTexto);
+        if (precio == null) {
+            return "El precio debe ser un número válido";
+        }
+
+        if (precio <= 0) {
+            return "El precio debe ser mayor a cero";
+        }
+
+        if (precio > 1500000000) {
+            return "El precio no puede exceder $1,500,000,000 COP";
+        }
+
+        return null;
+    }
+
+    /**
+     * Valida el campo "qué buscas" para trueques.
+     */
+    private String validarDeseosTrueque(String deseos) {
+        if (!util.ValidationUtils.isNotEmpty(deseos)) {
+            return "Debes especificar qué buscas a cambio";
+        }
+
+        if (!util.ValidationUtils.hasMinLength(deseos, 10)) {
+            return "La descripción de lo que buscas debe tener al menos 10 caracteres";
+        }
+
+        return null;
     }
 }

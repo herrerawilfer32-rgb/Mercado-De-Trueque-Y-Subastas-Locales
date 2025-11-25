@@ -1,96 +1,102 @@
 package service;
 
-import persistence.PublicacionRepository;
-import model.Publicacion;
-import model.User;
-
 import java.util.List;
 
+import model.Publicacion;
+import model.PublicacionTrueque;
+import model.User;
+import persistence.OfertaRepository;
+import persistence.PublicacionRepository;
+import util.EstadoOferta;
+import util.EstadoPublicacion;
+import util.TipoPublicacion;
+
+/**
+ * Servicio de negocio para manejar publicaciones.
+ */
 public class PublicacionService {
 
     private final PublicacionRepository publicacionRepository;
     private final UserService userService;
-    private final persistence.OfertaRepository ofertaRepository;
+    private final OfertaRepository ofertaRepository;
 
-    public PublicacionService(PublicacionRepository publicacionRepository, UserService userService,
-            persistence.OfertaRepository ofertaRepository) {
+    public PublicacionService(PublicacionRepository publicacionRepository,
+            UserService userService,
+            OfertaRepository ofertaRepository) {
         this.publicacionRepository = publicacionRepository;
         this.userService = userService;
         this.ofertaRepository = ofertaRepository;
     }
 
-    /*
-     * Usando el UserService podemos obtener la ubicacion del vendedor
+    /**
+     * Guarda una publicación nueva.
      */
-
-    public String obtenerUbicacionVendedor(Publicacion publicacion) {
-        // 1. Obtenemos el id del vendedor
-        String idVendedor = publicacion.getIdVendedor();
-
-        // 2. Usamos el userService para obtener el objeto User
-        User vendedor = userService.buscarUsuarioPorId(idVendedor);
-
-        // 3. Devolver la ubicación
-        if (vendedor != null) {
-            return vendedor.getUbicacion();
+    public void guardarPublicacion(Publicacion publicacion) {
+        if (publicacion == null) {
+            throw new IllegalArgumentException("La publicación no puede ser nula.");
         }
-        return "Ubicación no disponible";
-    }
-
-    // Buscar publicaciones por idVendedor
-    public Publicacion buscarPublicacionPorId(String idPublicacion) {
-        return publicacionRepository.buscarPorIdArticulo(idPublicacion);
-    }
-
-    /*
-     * Cierra la publicación cambiando su estado a CERRADA
-     */
-    public void cerrarPublicacion(String idPublicacion) {
-        // 1. Buscar la publicación por su ID
-        Publicacion publicacion = publicacionRepository.buscarPorIdArticulo(idPublicacion);
-
-        // 2. Validamos que exista
-        if (publicacion != null) {
-            // 3. Cambiamos el estado
-            publicacion.setEstado(util.EstadoPublicacion.CERRADA);
-
-            // 4. Guardamos el cambio (al ser un HashMap, el put sobrescribe y actualiza)
-            publicacionRepository.guardar(publicacion);
-
-            System.out.println("La publicación '" + publicacion.getTitulo() + "' ha sido CERRADA.");
-        } else {
-            System.out.println("Error: No se pudo cerrar la publicación. ID no encontrado.");
-        }
+        publicacionRepository.guardar(publicacion);
     }
 
     /**
-     * Devuelve todas las publicaciones activas.
+     * Busca todas las publicaciones activas.
      */
     public List<Publicacion> buscarPublicacionesActivas() {
         return publicacionRepository.buscarPublicacionesActivas();
     }
 
     /**
-     * Guarda una publicación nueva (Subasta o Trueque).
+     * Devuelve todas las publicaciones de un vendedor.
      */
-    public void guardarPublicacion(Publicacion publicacion) {
-        publicacionRepository.guardar(publicacion);
+    public List<Publicacion> obtenerPublicacionesPorVendedor(String idVendedor) {
+        return publicacionRepository.buscarPublicacionesPorVendedor(idVendedor);
+    }
+
+    /**
+     * Busca una publicación por su ID.
+     */
+    public Publicacion buscarPublicacionPorId(String idPublicacion) {
+        if (idPublicacion == null || idPublicacion.isBlank()) {
+            throw new IllegalArgumentException("El id de la publicación no puede ser nulo o vacío.");
+        }
+        return publicacionRepository.buscarPorIdArticulo(idPublicacion);
+    }
+
+    /**
+     * Devuelve el usuario vendedor (dueño) de una publicación.
+     */
+    public User obtenerVendedorDePublicacion(String idPublicacion) {
+        Publicacion publicacion = buscarPublicacionPorId(idPublicacion);
+        if (publicacion == null) {
+            throw new IllegalArgumentException("La publicación no existe.");
+        }
+        return userService.buscarUsuarioPorId(publicacion.getIdVendedor());
     }
 
     /**
      * Elimina una publicación si el usuario solicitante es el dueño.
+     * En lugar de borrarla físicamente, marca su estado como ELIMINADA.
      */
     public boolean eliminarPublicacion(String idPublicacion, String idUsuarioSolicitante) {
+        if (idPublicacion == null || idPublicacion.isBlank()) {
+            throw new IllegalArgumentException("El id de la publicación no puede ser nulo ni vacío.");
+        }
+        if (idUsuarioSolicitante == null || idUsuarioSolicitante.isBlank()) {
+            throw new IllegalArgumentException("El id del usuario no puede ser nulo ni vacío.");
+        }
+
         Publicacion pub = publicacionRepository.buscarPorIdArticulo(idPublicacion);
         if (pub != null && pub.getIdVendedor().equals(idUsuarioSolicitante)) {
-            publicacionRepository.eliminar(idPublicacion);
+            pub.setEstado(EstadoPublicacion.ELIMINADA);
+            publicacionRepository.guardar(pub);
             return true;
         }
         return false;
     }
 
     /**
-     * Cierra una subasta y determina el ganador.
+     * Cierra una subasta: valida dueño y tipo SUBASTA, busca la mejor oferta,
+     * la marca como ACEPTADA y cambia el estado de la publicación a CERRADA.
      */
     public void cerrarSubasta(String idPublicacion, String idVendedor) {
         Publicacion publicacion = publicacionRepository.buscarPorIdArticulo(idPublicacion);
@@ -99,11 +105,11 @@ public class PublicacionService {
             throw new IllegalArgumentException("Publicación no encontrada o no pertenece al vendedor.");
         }
 
-        if (publicacion.getTipoPublicacion() != util.TipoPublicacion.SUBASTA) {
+        if (publicacion.getTipoPublicacion() != TipoPublicacion.SUBASTA) {
             throw new IllegalArgumentException("Esta publicación no es una subasta.");
         }
 
-        // Buscar la mejor oferta
+        // Buscar la mejor oferta (mayor monto)
         List<model.Oferta> ofertas = ofertaRepository.buscarPorPublicacion(idPublicacion);
         model.Oferta mejorOferta = null;
 
@@ -114,35 +120,38 @@ public class PublicacionService {
         }
 
         if (mejorOferta != null) {
-            mejorOferta.setEstadoOferta(util.EstadoOferta.GANADORA);
+            mejorOferta.setEstadoOferta(EstadoOferta.ACEPTADA);
             ofertaRepository.guardar(mejorOferta);
             System.out.println("Subasta cerrada. Ganador: " + mejorOferta.getIdOfertante());
         } else {
             System.out.println("Subasta cerrada sin ofertas.");
         }
 
-        publicacion.setEstado(util.EstadoPublicacion.CERRADA);
+        publicacion.setEstado(EstadoPublicacion.CERRADA);
         publicacionRepository.guardar(publicacion);
     }
 
+    /**
+     * Recomienda posibles trueques para una publicación de tipo TRUEQUE.
+     */
     public List<Publicacion> recomendarTrueques(String idPublicacion) {
         Publicacion publicacion = publicacionRepository.buscarPorIdArticulo(idPublicacion);
-        if (publicacion == null || publicacion.getTipoPublicacion() != util.TipoPublicacion.TRUEQUE) {
+        if (publicacion == null || publicacion.getTipoPublicacion() != TipoPublicacion.TRUEQUE) {
             return java.util.Collections.emptyList();
         }
 
-        model.PublicacionTrueque trueque = (model.PublicacionTrueque) publicacion;
+        PublicacionTrueque trueque = (PublicacionTrueque) publicacion;
         String deseos = trueque.getObjetosDeseados().toLowerCase();
 
-        // Búsqueda simple: buscar publicaciones activas cuyo título contenga alguna
-        // palabra de los deseos
+        // Búsqueda simple: publicaciones activas cuyo título contenga el texto de
+        // deseos
         List<Publicacion> activas = publicacionRepository.buscarPublicacionesActivas();
         List<Publicacion> recomendaciones = new java.util.ArrayList<>();
 
         for (Publicacion p : activas) {
-            if (p.getIdArticulo().equals(idPublicacion))
-                continue; // No recomendarse a sí mismo
-
+            if (p.getIdArticulo().equals(idPublicacion)) {
+                continue; // No recomendarse a sí misma
+            }
             if (deseos.contains(p.getTitulo().toLowerCase())) {
                 recomendaciones.add(p);
             }
@@ -152,15 +161,28 @@ public class PublicacionService {
     }
 
     /**
+     * Cierra una publicación cambiando su estado a CERRADA (no solo subastas).
+     */
+    public void cerrarPublicacion(String idPublicacion) {
+        Publicacion publicacion = publicacionRepository.buscarPorIdArticulo(idPublicacion);
+
+        if (publicacion != null) {
+            publicacion.setEstado(EstadoPublicacion.CERRADA);
+            publicacionRepository.guardar(publicacion);
+        }
+    }
+
+    /**
      * Actualiza una publicación si el usuario solicitante es el dueño.
      */
     public boolean actualizarPublicacion(Publicacion publicacion, String idUsuarioSolicitante) {
-        // Verificamos que la publicación exista y el usuario sea el dueño
+        if (publicacion == null) {
+            throw new IllegalArgumentException("La publicación no puede ser nula.");
+        }
+
         Publicacion pubExistente = publicacionRepository.buscarPorIdArticulo(publicacion.getIdArticulo());
 
         if (pubExistente != null && pubExistente.getIdVendedor().equals(idUsuarioSolicitante)) {
-            // Mantenemos la fecha de publicación original si se desea, o actualizamos todo
-            // Aquí simplemente guardamos la nueva versión que ya debe traer los cambios
             publicacionRepository.guardar(publicacion);
             return true;
         }

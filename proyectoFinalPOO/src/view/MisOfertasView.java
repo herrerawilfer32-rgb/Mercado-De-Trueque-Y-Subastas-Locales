@@ -40,7 +40,7 @@ public class MisOfertasView extends JFrame {
         listaPublicaciones.addListSelectionListener(e -> cargarOfertasDePublicacion());
 
         JPanel panelIzq = new JPanel(new BorderLayout());
-        panelIzq.setBorder(BorderFactory.createTitledBorder("Mis Publicaciones Activas"));
+        panelIzq.setBorder(BorderFactory.createTitledBorder("Mis Publicaciones"));
         panelIzq.add(new JScrollPane(listaPublicaciones), BorderLayout.CENTER);
         panelIzq.setPreferredSize(new Dimension(250, 0));
 
@@ -56,11 +56,9 @@ public class MisOfertasView extends JFrame {
 
     private void cargarMisPublicaciones() {
         listModelPublicaciones.clear();
-        List<Publicacion> todas = controller.obtenerPublicacionesActivas();
-        for (Publicacion p : todas) {
-            if (p.getIdVendedor().equals(usuarioActual.getId())) {
-                listModelPublicaciones.addElement(p);
-            }
+        List<Publicacion> misPublicaciones = controller.obtenerPublicacionesPorVendedor(usuarioActual.getId());
+        for (Publicacion p : misPublicaciones) {
+            listModelPublicaciones.addElement(p);
         }
     }
 

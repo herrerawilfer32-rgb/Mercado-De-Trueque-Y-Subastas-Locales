@@ -61,8 +61,15 @@ public class LoginWindow extends JFrame {
     }
 
     private void handleLogin() {
-        String user = usernameField.getText();
-        String pass = new String(passwordField.getPassword());
+        String user = usernameField.getText().trim();
+        String pass = new String(passwordField.getPassword()).trim();
+
+        // Validar campos
+        String errorMessage = validarCamposLogin(user, pass);
+        if (errorMessage != null) {
+            JOptionPane.showMessageDialog(this, errorMessage, "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         User usuario = authController.manejarLogin(user, pass);
 
@@ -75,8 +82,34 @@ public class LoginWindow extends JFrame {
             // 2. CERRAR ESTA VENTANA DE LOGIN
             dispose();
         } else {
-            JOptionPane.showMessageDialog(this, "Datos incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error de Autenticación",
+                    JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    /**
+     * Valida los campos del formulario de login.
+     * 
+     * @return mensaje de error si hay problemas, null si todo está bien
+     */
+    private String validarCamposLogin(String user, String pass) {
+        if (!util.ValidationUtils.isNotEmpty(user)) {
+            return "Por favor ingrese su usuario";
+        }
+
+        if (!util.ValidationUtils.isNotEmpty(pass)) {
+            return "Por favor ingrese su contraseña";
+        }
+
+        if (!util.ValidationUtils.hasMinLength(user, 3)) {
+            return "El usuario debe tener al menos 3 caracteres";
+        }
+
+        if (!util.ValidationUtils.hasMinLength(pass, 4)) {
+            return "La contraseña debe tener al menos 4 caracteres";
+        }
+
+        return null; // Todo válido
     }
 
     private void openRegisterWindow() {

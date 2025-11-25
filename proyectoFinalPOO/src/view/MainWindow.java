@@ -27,8 +27,9 @@ public class MainWindow extends JFrame {
     // Componentes UI
     private JLabel lblBienvenida;
     private JButton btnLoginLogout;
-    private DefaultListModel<Publicacion> listModel; // Modelo para la lista visual
-    private JList<Publicacion> listaVisual;
+    private JPanel panelContenedorCards;
+    private java.util.List<PublicacionCardPanel> tarjetasActuales;
+    private PublicacionCardPanel tarjetaSeleccionada;
 
     // Pestañas y paneles de chat
     private JTabbedPane pestañasCentro;
@@ -74,31 +75,21 @@ public class MainWindow extends JFrame {
         pestañasCentro = new JTabbedPane();
 
         // ==== TAB PUBLICACIONES ====
-        listModel = new DefaultListModel<>();
-        listaVisual = new JList<>(listModel);
-        listaVisual.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        tarjetasActuales = new java.util.ArrayList<>();
 
-        // Renderizador personalizado para mostrar texto bonito
-        listaVisual.setCellRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-                                                          boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Publicacion) {
-                    Publicacion p = (Publicacion) value;
-                    setText(String.format("[%s] %s - %s ($%.2f)",
-                            p.getTipoPublicacion(), p.getTitulo(), p.getDescripcion(),
-                            (p instanceof model.PublicacionSubasta)
-                                    ? ((model.PublicacionSubasta) p).getPrecioMinimo()
-                                    : 0.0));
-                }
-                return this;
-            }
-        });
+        panelContenedorCards = new JPanel();
+        panelContenedorCards.setLayout(new GridLayout(0, 3, 15, 15));
+        panelContenedorCards.setBackground(Color.WHITE);
+        panelContenedorCards.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        JScrollPane scrollCards = new JScrollPane(panelContenedorCards);
+        scrollCards.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollCards.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollCards.getVerticalScrollBar().setUnitIncrement(16);
 
         JPanel panelPublicaciones = new JPanel(new BorderLayout());
         panelPublicaciones.setBorder(BorderFactory.createTitledBorder(" Últimas Publicaciones "));
-        panelPublicaciones.add(new JScrollPane(listaVisual), BorderLayout.CENTER);
+        panelPublicaciones.add(scrollCards, BorderLayout.CENTER);
 
         pestañasCentro.addTab("Publicaciones", panelPublicaciones);
 
@@ -114,8 +105,7 @@ public class MainWindow extends JFrame {
         JSplitPane splitChats = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
                 panelListaChats,
-                panelChatDetalle
-        );
+                panelChatDetalle);
         splitChats.setDividerLocation(300);
 
         pestañasCentro.addTab("Chats", splitChats);
@@ -169,14 +159,38 @@ public class MainWindow extends JFrame {
     // --- MÉTODOS LÓGICOS ---
 
     public void cargarPublicaciones() {
-        listModel.clear();
+        panelContenedorCards.removeAll();
+        tarjetasActuales.clear();
+        tarjetaSeleccionada = null;
+
         List<Publicacion> lista = pubController.obtenerPublicacionesActivas();
 
         if (lista != null) {
             for (Publicacion p : lista) {
-                listModel.addElement(p);
+                PublicacionCardPanel card = new PublicacionCardPanel(p, pubController);
+
+                card.addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mouseClicked(java.awt.event.MouseEvent e) {
+                        seleccionarTarjeta(card);
+                    }
+                });
+
+                tarjetasActuales.add(card);
+                panelContenedorCards.add(card);
             }
         }
+
+        panelContenedorCards.revalidate();
+        panelContenedorCards.repaint();
+    }
+
+    private void seleccionarTarjeta(PublicacionCardPanel card) {
+        if (tarjetaSeleccionada != null) {
+            tarjetaSeleccionada.setSelected(false);
+        }
+        tarjetaSeleccionada = card;
+        tarjetaSeleccionada.setSelected(true);
     }
 
     private void verDetalleSeleccionado() {
@@ -185,13 +199,14 @@ public class MainWindow extends JFrame {
             return;
         }
 
-        Publicacion seleccionada = listaVisual.getSelectedValue();
-        if (seleccionada == null) {
+        if (tarjetaSeleccionada == null) {
             JOptionPane.showMessageDialog(this, "Selecciona una publicación primero.");
             return;
         }
+        Publicacion seleccionada = tarjetaSeleccionada.getPublicacion();
 
-        // 🔗 Ahora le pasamos también this (MainWindow) para poder abrir el chat desde el detalle
+        // 🔗 Ahora le pasamos también this (MainWindow) para poder abrir el chat desde
+        // el detalle
         new DetallePublicacionView(pubController, seleccionada, usuarioLogueado, this).setVisible(true);
     }
 
@@ -201,11 +216,11 @@ public class MainWindow extends JFrame {
             return;
         }
 
-        Publicacion seleccionada = listaVisual.getSelectedValue();
-        if (seleccionada == null) {
+        if (tarjetaSeleccionada == null) {
             JOptionPane.showMessageDialog(this, "Selecciona una publicación primero.");
             return;
         }
+        Publicacion seleccionada = tarjetaSeleccionada.getPublicacion();
 
         int confirm = JOptionPane.showConfirmDialog(this,
                 "¿Estás seguro de eliminar '" + seleccionada.getTitulo() + "'?", "Confirmar",
@@ -228,11 +243,11 @@ public class MainWindow extends JFrame {
             return;
         }
 
-        Publicacion seleccionada = listaVisual.getSelectedValue();
-        if (seleccionada == null) {
+        if (tarjetaSeleccionada == null) {
             JOptionPane.showMessageDialog(this, "Selecciona una publicación primero.");
             return;
         }
+        Publicacion seleccionada = tarjetaSeleccionada.getPublicacion();
 
         // Verificar dueño antes de abrir ventana
         if (!seleccionada.getIdVendedor().equals(usuarioLogueado.getId())) {

@@ -72,15 +72,14 @@ public class PublicacionRepository {
 	public List<Publicacion> buscarTodasLasPublicaciones() {
 		return new ArrayList<>(baseDeDatos.values());
 	}
+
 	/**
-     * Elimina una publicación por su identificador.
-     *
-     * @param idPublicacion Identificador de la publicación a eliminar.
-     */
-    public void eliminar(String idPublicacion) {
-        if (idPublicacion == null) {
-            return;
-        }
-        baseDeDatos.remove(idPublicacion);
-    }
+	 * Busca todas las publicaciones de un vendedor específico.
+	 */
+	public List<Publicacion> buscarPublicacionesPorVendedor(String idVendedor) {
+		return baseDeDatos.values().stream()
+				.filter(pub -> pub.getIdVendedor().equals(idVendedor))
+				.collect(Collectors.toList());
+	}
+
 }

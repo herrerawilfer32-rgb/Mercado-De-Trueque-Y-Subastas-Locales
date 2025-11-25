@@ -25,6 +25,10 @@ public class PublicacionController {
         return publicacionService.buscarPublicacionesActivas();
     }
 
+    public List<Publicacion> obtenerPublicacionesPorVendedor(String idVendedor) {
+        return publicacionService.obtenerPublicacionesPorVendedor(idVendedor);
+    }
+
     public boolean crearSubasta(String titulo, String descripcion, User vendedor, double precioMinimo,
             int diasDuracion, List<String> fotosPaths) {
         try {
