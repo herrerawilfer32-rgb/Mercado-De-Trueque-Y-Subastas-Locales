@@ -58,6 +58,23 @@ public class DetallePublicacionView extends JFrame {
     }
 
     private void initComponents() {
+
+        // ===== BARRA SUPERIOR INTERNA CON BOTÓN "X" =====
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        headerPanel.setBackground(new Color(245, 245, 245));
+
+        JButton btnCerrarSuperior = new JButton("X");
+        btnCerrarSuperior.setMargin(new Insets(2, 6, 2, 6));
+        btnCerrarSuperior.setFocusable(false);
+        btnCerrarSuperior.setBackground(new Color(192, 57, 43));
+        btnCerrarSuperior.setForeground(Color.WHITE);
+        btnCerrarSuperior.addActionListener(e -> dispose());
+
+        headerPanel.add(btnCerrarSuperior, BorderLayout.EAST);
+        add(headerPanel, BorderLayout.NORTH);
+
+        // ===== PANEL CENTRAL CON LA INFORMACIÓN =====
         JPanel panelInfo = new JPanel();
         panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
         panelInfo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -102,7 +119,7 @@ public class DetallePublicacionView extends JFrame {
 
         add(new JScrollPane(panelInfo), BorderLayout.CENTER);
 
-        // BOTONES INFERIORES
+        // ===== BOTONES INFERIORES (SE MANTIENEN IGUAL, SIN "CERRAR") =====
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
         if (usuarioActual != null && !publicacion.getIdVendedor().equals(usuarioActual.getId())) {
@@ -133,28 +150,20 @@ public class DetallePublicacionView extends JFrame {
             btnReportar.addActionListener(e -> reportarPublicacion());
             panelBotones.add(btnReportar);
 
-            JButton btnCerrar = new JButton("Cerrar");
-            btnCerrar.addActionListener(e -> dispose());
-            panelBotones.add(btnCerrar);
+            // ⛔ Ya NO se añade el botón "Cerrar" aquí
 
             add(panelBotones, BorderLayout.SOUTH);
 
         } else {
+            // Dueño de la publicación: solo mensaje informativo abajo.
             JLabel lblDueño = new JLabel("Eres el propietario de esta publicación", SwingConstants.CENTER);
             lblDueño.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-            JPanel panelBotonCerrar = new JPanel(new BorderLayout());
-            panelBotonCerrar.add(lblDueño, BorderLayout.CENTER);
-
-            JButton btnCerrar = new JButton("Cerrar");
-            btnCerrar.addActionListener(e -> dispose());
-            panelBotonCerrar.add(btnCerrar, BorderLayout.SOUTH);
-
-            add(panelBotonCerrar, BorderLayout.SOUTH);
+            add(lblDueño, BorderLayout.SOUTH);
+            // El cierre lo hace la "X" superior
         }
     }
 
-    // ============= SECCIÓN SUBASTA (LÓGICA DE NEGOCIO VA AL CONTROLLER) =============
+    // ============= SECCIÓN SUBASTA =============
 
     private void configurarSeccionSubasta(JPanel panelInfo) {
         this.publicacionSubasta = (PublicacionSubasta) publicacion;
@@ -272,7 +281,7 @@ public class DetallePublicacionView extends JFrame {
         }
     }
 
-    // ============= TRUEQUE (LÓGICA SIMPLE) =============
+    // ============= TRUEQUE =============
 
     private void configurarSeccionTrueque(JPanel panelInfo) {
         PublicacionTrueque trueque = (PublicacionTrueque) publicacion;
@@ -312,7 +321,7 @@ public class DetallePublicacionView extends JFrame {
                 }
             }
         } else {
-            // TRUEQUE: mismo diálogo que ya tenías (con imágenes)
+            // TRUEQUE: diálogo con descripción + imágenes
             JDialog dialog = new JDialog(this, "Realizar Oferta de Trueque", true);
             dialog.setSize(400, 300);
             dialog.setLocationRelativeTo(this);
@@ -382,7 +391,7 @@ public class DetallePublicacionView extends JFrame {
         }
     }
 
-    // ============= CHAT Y REPORTE (SE MANTIENEN) =============
+    // ============= CHAT Y REPORTE =============
 
     private void contactarVendedor() {
         if (usuarioActual == null) {

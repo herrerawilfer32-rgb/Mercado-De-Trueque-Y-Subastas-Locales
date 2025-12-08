@@ -29,6 +29,15 @@ public class MisOfertasView extends JFrame {
         setLayout(new BorderLayout());
 
         initComponents();
+        
+        JButton btnCerrar = new JButton("Cerrar");
+        btnCerrar.addActionListener(e -> dispose());
+
+        JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelInferior.add(btnCerrar);
+
+        add(panelInferior, BorderLayout.SOUTH);
+        
         cargarMisPublicaciones();
     }
 

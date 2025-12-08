@@ -27,6 +27,7 @@ public class AdminDashboardView extends JFrame {
     }
 
     private void initUI() {
+        // ---------- PESTAÑAS PRINCIPALES ----------
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // Panel Usuarios
@@ -55,6 +56,17 @@ public class AdminDashboardView extends JFrame {
 
         tabbedPane.addTab("Estadísticas", panelStats);
 
+        // Añadimos las pestañas al centro de la ventana
         add(tabbedPane, BorderLayout.CENTER);
+
+        // ---------- BOTÓN INFERIOR "CERRAR" ----------
+        JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+
+        JButton btnCerrar = new JButton("Cerrar");
+        btnCerrar.addActionListener(e -> dispose()); // Solo cierra esta ventana de admin
+
+        panelInferior.add(btnCerrar);
+
+        add(panelInferior, BorderLayout.SOUTH);
     }
 }
