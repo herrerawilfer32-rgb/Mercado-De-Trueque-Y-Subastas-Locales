@@ -132,16 +132,11 @@ public class PublicacionController {
     /**
      * Aceptar oferta:
      * - Usa la lógica existente de OfertaService.
-<<<<<<< HEAD
      * - Si la publicación es de TRUEQUE, se envía mensaje al intercambiador
      * elegido:
      * "¡Felicidades, he elegido hacer un trato contigo! ¿deseas continuar con el
      * trato?"
-=======
-     * - Si la publicación es de TRUEQUE, se envía mensaje al intercambiador elegido:
-     *   "¡Felicidades, he elegido hacer un trato contigo! ¿deseas continuar con el trato?"
-     *   con tipo BOTON_SI_NO y publicación asociada.
->>>>>>> 19f62bad7988309e541e478e3b6ed5c1a6e718e7
+     * con tipo BOTON_CONFIRMAR_TRUEQUE y publicación asociada.
      */
     public boolean aceptarOferta(String idOferta, String idVendedor) {
         try {
@@ -167,8 +162,7 @@ public class PublicacionController {
                                     vendedor,
                                     mensaje,
                                     Mensaje.TipoMensaje.BOTON_CONFIRMAR_TRUEQUE,
-                                    publicacion.getIdArticulo()
-                            );
+                                    publicacion.getIdArticulo());
                         }
                     }
                 }
@@ -202,12 +196,8 @@ public class PublicacionController {
     /**
      * Cerrar subasta:
      * - Determina ganador (mejor oferta) y le envía mensaje:
-<<<<<<< HEAD
      * "¡Felicidades, eres el ganador de la subasta!, realiza tu pago aquí ..."
-=======
-     *   "¡Felicidades, eres el ganador de la subasta!, realiza tu pago aquí ..."
-     *   con tipo BOTON_PAGAR_SUBASTA y referencia a la publicación.
->>>>>>> 19f62bad7988309e541e478e3b6ed5c1a6e718e7
+     * con tipo BOTON_PAGAR_SUBASTA y referencia a la publicación.
      * - A cada participante que pujó pero no ganó:
      * "La subasta ha cerrado, en caso de no concretar un trato podrías ser el
      * próximo adjudicatario."
@@ -244,8 +234,7 @@ public class PublicacionController {
                             vendedor,
                             mensajeGanador,
                             Mensaje.TipoMensaje.BOTON_PAGAR_SUBASTA,
-                            publicacion.getIdArticulo()
-                    );
+                            publicacion.getIdArticulo());
                 }
 
                 // 2) Mensajes a los que pujarón pero no ganaron (mensaje normal)
@@ -300,7 +289,6 @@ public class PublicacionController {
     // NUEVO: CONCRETAR INTERCAMBIO Y FINALIZAR SUBASTA CON PAGO
     // ============================================================
 
-<<<<<<< HEAD
     /**
      * Concreta un intercambio (TRUEQUE):
      * - Solo puede llamarse por el dueño o por el ofertante aceptado.
@@ -308,8 +296,6 @@ public class PublicacionController {
      * - Notifica a los demás ofertantes:
      * "El intercambio ha sido concretado con otro usuario."
      */
-=======
->>>>>>> 19f62bad7988309e541e478e3b6ed5c1a6e718e7
     public void concretarIntercambio(String idPublicacion, String idUsuarioQueConfirma) {
         try {
             Publicacion publicacion = publicacionService.buscarPublicacionPorId(idPublicacion);
@@ -336,11 +322,8 @@ public class PublicacionController {
 
             User vendedor = publicacionService.obtenerUsuarioPorId(trueque.getIdVendedor());
 
-<<<<<<< HEAD
             // Notificar a los demás ofertantes que el intercambio se concretó con otro
             // usuario
-=======
->>>>>>> 19f62bad7988309e541e478e3b6ed5c1a6e718e7
             List<Oferta> ofertasNoAceptadas = ofertaService.obtenerOfertasNoAceptadasTrueque(idPublicacion);
             if (chatController != null && vendedor != null && ofertasNoAceptadas != null) {
                 for (Oferta oferta : ofertasNoAceptadas) {
@@ -353,7 +336,6 @@ public class PublicacionController {
                 }
             }
 
-<<<<<<< HEAD
             // Marcar publicación como FINALIZADA
             publicacionService.finalizarPublicacion(idPublicacion);
             javax.swing.JOptionPane.showMessageDialog(null, "Intercambio concretado exitosamente.");
@@ -376,10 +358,6 @@ public class PublicacionController {
                             usuarioCalificador).setVisible(true);
                 }
             }
-=======
-            publicacionService.eliminarPublicacion(idPublicacion, trueque.getIdVendedor());
-            javax.swing.JOptionPane.showMessageDialog(null, "Intercambio concretado y publicación eliminada.");
->>>>>>> 19f62bad7988309e541e478e3b6ed5c1a6e718e7
         } catch (Exception e) {
             e.printStackTrace();
             javax.swing.JOptionPane.showMessageDialog(null,
@@ -407,7 +385,6 @@ public class PublicacionController {
 
             javax.swing.JOptionPane.showMessageDialog(null, "¡Felicidades eres el adjudicatario!");
 
-<<<<<<< HEAD
             // Marcar la publicación como FINALIZADA
             publicacionService.finalizarPublicacion(idPublicacion);
 
@@ -424,10 +401,6 @@ public class PublicacionController {
                             true, idPublicacion, comprador).setVisible(true);
                 }
             }
-=======
-            String idVendedor = publicacion.getIdVendedor();
-            publicacionService.eliminarPublicacion(idPublicacion, idVendedor);
->>>>>>> 19f62bad7988309e541e478e3b6ed5c1a6e718e7
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -9,12 +9,9 @@ import model.User;
 import model.Oferta;
 import util.TipoPublicacion;
 import util.TipoReporte;
-<<<<<<< HEAD
 import controller.UserController;
 import view.PerfilUsuarioView;
-=======
 import util.EstadoPublicacion;
->>>>>>> 19f62bad7988309e541e478e3b6ed5c1a6e718e7
 
 import javax.swing.*;
 import java.awt.*;
@@ -124,8 +121,8 @@ public class DetallePublicacionView extends JFrame {
         } else {
             configurarSeccionTrueque(panelInfo);
         }
-        
-     // MENSAJE: "La subasta ha cerrado" para NO dueños en subasta cerrada
+
+        // MENSAJE: "La subasta ha cerrado" para NO dueños en subasta cerrada
         if (publicacion.getTipoPublicacion() == TipoPublicacion.SUBASTA
                 && publicacion.getEstado() != EstadoPublicacion.ACTIVA
                 && (usuarioActual == null || !publicacion.getIdVendedor().equals(usuarioActual.getId()))) {
