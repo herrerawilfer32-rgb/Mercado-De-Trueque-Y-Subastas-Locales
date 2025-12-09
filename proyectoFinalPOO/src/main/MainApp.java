@@ -1,3 +1,9 @@
+/*
+ * Nombre de la clase: MainApp
+ * Autor: Angel 
+ * Descripción: Inicializa toda la estructura del sistema, crea los repositorios que manejan los datos, 
+ * configura los servicios con la lógica de negocio y lanza la ventana principal.
+ */
 package main;
 
 import javax.swing.SwingUtilities;

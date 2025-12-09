@@ -1,3 +1,8 @@
+/*
+ * Nombre de la clase: ConfiguracionGlobal 
+ * Autor: Angel y Wilfer
+ * Descripción: Representa la configuración general del sistema que puede ser modificada por administradores.
+ */
 package model;
 
 /**

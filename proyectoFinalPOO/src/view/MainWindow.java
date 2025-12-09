@@ -214,7 +214,13 @@ public class MainWindow extends JFrame {
             pestañasCentro.setSelectedIndex(1); // Ir a la pestaña "Chats"
         });
 
+<<<<<<< HEAD
         panelChatDetalle = new PanelChatDetalle(chatController, pubController);
+=======
+        panelChatDetalle = new PanelChatDetalle(chatController);
+        panelChatDetalle.setPublicacionController(pubController);
+
+>>>>>>> 19f62bad7988309e541e478e3b6ed5c1a6e718e7
 
         JSplitPane splitChats = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,

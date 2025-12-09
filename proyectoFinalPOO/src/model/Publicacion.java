@@ -1,3 +1,9 @@
+/*
+ * Nombre de la clase: Publicacion
+ * Autor: Angel y Wilfer
+ * Descripción: Define la estructura base para cualquier tipo de publicación dentro del sistema, almacenando información.
+ */
+
 package model;
 
 import java.util.Date;
