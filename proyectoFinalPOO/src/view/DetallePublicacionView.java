@@ -55,7 +55,7 @@ public class DetallePublicacionView extends JFrame {
         setSize(500, 650);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        getContentPane().setLayout(new BorderLayout());
 
         initComponents();
     }
@@ -65,20 +65,21 @@ public class DetallePublicacionView extends JFrame {
         // ===== BARRA SUPERIOR INTERNA CON BOTÓN "X" =====
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        headerPanel.setBackground(new Color(245, 245, 245));
+        headerPanel.setBackground(new Color(51, 6, 125));
 
         JButton btnCerrarSuperior = new JButton("X");
         btnCerrarSuperior.setMargin(new Insets(2, 6, 2, 6));
         btnCerrarSuperior.setFocusable(false);
-        btnCerrarSuperior.setBackground(new Color(192, 57, 43));
+        btnCerrarSuperior.setBackground(new Color(254, 150, 252));
         btnCerrarSuperior.setForeground(Color.WHITE);
         btnCerrarSuperior.addActionListener(e -> dispose());
 
         headerPanel.add(btnCerrarSuperior, BorderLayout.EAST);
-        add(headerPanel, BorderLayout.NORTH);
+        getContentPane().add(headerPanel, BorderLayout.NORTH);
 
         // ===== PANEL CENTRAL CON LA INFORMACIÓN =====
         JPanel panelInfo = new JPanel();
+        panelInfo.setBackground(new Color(106, 153, 149));
         panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
         panelInfo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -90,6 +91,7 @@ public class DetallePublicacionView extends JFrame {
 
         // Descripción
         JTextArea txtDesc = new JTextArea(publicacion.getDescripcion());
+        txtDesc.setBackground(new Color(206, 244, 253));
         txtDesc.setEditable(false);
         txtDesc.setLineWrap(true);
         txtDesc.setWrapStyleWord(true);
@@ -142,7 +144,7 @@ public class DetallePublicacionView extends JFrame {
             panelInfo.add(lblPath);
         }
 
-        add(new JScrollPane(panelInfo), BorderLayout.CENTER);
+        getContentPane().add(new JScrollPane(panelInfo), BorderLayout.CENTER);
 
         // ===== BOTONES INFERIORES (SE MANTIENEN IGUAL, SIN "CERRAR") =====
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
@@ -200,13 +202,13 @@ public class DetallePublicacionView extends JFrame {
 
             // ⛔ Ya NO se añade el botón "Cerrar" aquí
 
-            add(panelBotones, BorderLayout.SOUTH);
+            getContentPane().add(panelBotones, BorderLayout.SOUTH);
 
         } else {
             // Dueño de la publicación: solo mensaje informativo abajo.
             JLabel lblDueño = new JLabel("Eres el propietario de esta publicación", SwingConstants.CENTER);
             lblDueño.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            add(lblDueño, BorderLayout.SOUTH);
+            getContentPane().add(lblDueño, BorderLayout.SOUTH);
             // El cierre lo hace la "X" superior
         }
     }
@@ -371,7 +373,7 @@ public class DetallePublicacionView extends JFrame {
             JDialog dialog = new JDialog(this, "Realizar Oferta de Trueque", true);
             dialog.setSize(400, 300);
             dialog.setLocationRelativeTo(this);
-            dialog.setLayout(new BorderLayout());
+            dialog.getContentPane().setLayout(new BorderLayout());
 
             JPanel panelCentral = new JPanel();
             panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
@@ -402,7 +404,7 @@ public class DetallePublicacionView extends JFrame {
             panelImg.add(lblImagenes);
             panelCentral.add(panelImg);
 
-            dialog.add(panelCentral, BorderLayout.CENTER);
+            dialog.getContentPane().add(panelCentral, BorderLayout.CENTER);
 
             JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
             JButton btnCancelar = new JButton("Cancelar");
@@ -430,7 +432,7 @@ public class DetallePublicacionView extends JFrame {
 
             panelBotones.add(btnCancelar);
             panelBotones.add(btnEnviar);
-            dialog.add(panelBotones, BorderLayout.SOUTH);
+            dialog.getContentPane().add(panelBotones, BorderLayout.SOUTH);
 
             dialog.setVisible(true);
         }

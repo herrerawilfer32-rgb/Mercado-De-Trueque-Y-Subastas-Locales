@@ -21,6 +21,7 @@ public class MisOfertasView extends JFrame {
     private JPanel panelOfertas;
 
     public MisOfertasView(PublicacionController controller, User usuarioActual) {
+    	setBackground(new Color(106, 153, 149));
         this.controller = controller;
         this.usuarioActual = usuarioActual;
 
@@ -36,6 +37,7 @@ public class MisOfertasView extends JFrame {
         btnCerrar.addActionListener(e -> dispose());
 
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelInferior.setBackground(new Color(206, 244, 253));
         panelInferior.add(btnCerrar);
 
         getContentPane().add(panelInferior, BorderLayout.SOUTH);
@@ -47,6 +49,7 @@ public class MisOfertasView extends JFrame {
         // Panel Izquierdo: Mis Publicaciones
         listModelPublicaciones = new DefaultListModel<>();
         listaPublicaciones = new JList<>(listModelPublicaciones);
+        listaPublicaciones.setBackground(new Color(206, 244, 253));
         listaPublicaciones.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
@@ -69,11 +72,13 @@ public class MisOfertasView extends JFrame {
 
         // Panel Izquierdo: Mis Publicaciones
         JPanel panelIzq = new JPanel(new BorderLayout());
+        panelIzq.setBackground(new Color(106, 153, 149));
         panelIzq.setBorder(BorderFactory.createTitledBorder("Mis Publicaciones"));
         panelIzq.setPreferredSize(new Dimension(280, 0));
 
         // Botón actualizar
         JButton btnActualizar = new JButton("🔄 Actualizar Lista");
+        btnActualizar.setBackground(new Color(29, 145, 169));
         btnActualizar.addActionListener(e -> cargarMisPublicaciones());
 
         panelIzq.add(btnActualizar, BorderLayout.NORTH);
@@ -81,11 +86,13 @@ public class MisOfertasView extends JFrame {
 
         // Panel Derecho: Ofertas recibidas
         panelOfertas = new JPanel();
+        panelOfertas.setBackground(new Color(206, 244, 253));
         panelOfertas.setLayout(new BoxLayout(panelOfertas, BoxLayout.Y_AXIS));
         JScrollPane scrollOfertas = new JScrollPane(panelOfertas);
         scrollOfertas.setBorder(BorderFactory.createTitledBorder("Ofertas Recibidas"));
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panelIzq, scrollOfertas);
+        splitPane.setBackground(new Color(106, 153, 149));
         getContentPane().add(splitPane, BorderLayout.CENTER);
     }
 

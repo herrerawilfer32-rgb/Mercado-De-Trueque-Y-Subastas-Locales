@@ -28,36 +28,46 @@ public class EditarPublicacionView extends JFrame {
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(mainWindow);
-        setLayout(new BorderLayout());
+        getContentPane().setLayout(new BorderLayout());
 
         initComponents();
     }
 
     private void initComponents() {
         JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        formPanel.setBackground(new Color(106, 153, 149));
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        formPanel.add(new JLabel("Título:"));
+        JLabel label = new JLabel("Título:");
+        label.setBackground(new Color(106, 153, 149));
+        formPanel.add(label);
         txtTitulo = new JTextField(publicacion.getTitulo());
+        txtTitulo.setBackground(new Color(206, 244, 253));
         formPanel.add(txtTitulo);
 
-        formPanel.add(new JLabel("Descripción:"));
+        JLabel label_1 = new JLabel("Descripción:");
+        label_1.setBackground(new Color(106, 153, 149));
+        formPanel.add(label_1);
         txtDescripcion = new JTextArea(publicacion.getDescripcion());
+        txtDescripcion.setBackground(new Color(206, 244, 253));
         txtDescripcion.setLineWrap(true);
         formPanel.add(new JScrollPane(txtDescripcion));
 
-        add(formPanel, BorderLayout.CENTER);
+        getContentPane().add(formPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.setBackground(new Color(106, 153, 149));
         JButton btnGuardar = new JButton("Guardar Cambios");
+        btnGuardar.setBackground(new Color(29, 145, 169));
         JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.setBackground(new Color(29, 145, 169));
 
         btnGuardar.addActionListener(e -> guardarCambios());
         btnCancelar.addActionListener(e -> dispose());
 
         buttonPanel.add(btnGuardar);
         buttonPanel.add(btnCancelar);
-        add(buttonPanel, BorderLayout.SOUTH);
+        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
     }
 
     private void guardarCambios() {

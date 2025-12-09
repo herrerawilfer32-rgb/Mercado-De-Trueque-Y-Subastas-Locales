@@ -22,6 +22,7 @@ public class CrearPublicacionView extends JFrame {
     private JPanel panelPreviewFotos; // Panel para mostrar previews
 
     public CrearPublicacionView(PublicacionController controller, User vendedor, MainWindow mainWindow) {
+    	setBackground(new Color(55, 206, 191));
         this.controller = controller;
         this.vendedor = vendedor;
         this.mainWindow = mainWindow;
@@ -30,7 +31,7 @@ public class CrearPublicacionView extends JFrame {
         setSize(500, 650);
         setLocationRelativeTo(mainWindow);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        getContentPane().setLayout(new BorderLayout());
 
         fotosSeleccionadas = new ArrayList<>();
 
@@ -40,18 +41,28 @@ public class CrearPublicacionView extends JFrame {
     private void initComponents() {
         // --- Formulario Común ---
         JPanel panelForm = new JPanel(new GridLayout(0, 1, 5, 5));
+        panelForm.setBackground(new Color(145, 78, 184));
         panelForm.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        panelForm.add(new JLabel("Título del Artículo:"));
+        JLabel label = new JLabel("Título del Artículo:");
+        label.setBackground(new Color(145, 78, 184));
+        panelForm.add(label);
         txtTitulo = new JTextField();
+        txtTitulo.setBackground(new Color(238, 181, 251));
         panelForm.add(txtTitulo);
 
-        panelForm.add(new JLabel("Descripción:"));
+        JLabel label_1 = new JLabel("Descripción:");
+        label_1.setBackground(new Color(145, 78, 184));
+        panelForm.add(label_1);
         txtDescripcion = new JTextArea(3, 20);
+        txtDescripcion.setBackground(new Color(238, 181, 251));
         panelForm.add(new JScrollPane(txtDescripcion));
 
-        panelForm.add(new JLabel("Tipo de Publicación:"));
+        JLabel label_2 = new JLabel("Tipo de Publicación:");
+        label_2.setBackground(new Color(145, 78, 184));
+        panelForm.add(label_2);
         cmbTipo = new JComboBox<>(new String[]{"SUBASTA", "TRUEQUE"});
+        cmbTipo.setBackground(new Color(238, 181, 251));
         panelForm.add(cmbTipo);
 
         // --- Panel Dinámico (Cambia según el combo) ---
@@ -60,8 +71,11 @@ public class CrearPublicacionView extends JFrame {
 
         // Opción A: Panel Subasta
         JPanel panelSubasta = new JPanel(new GridLayout(0, 1));
-        panelSubasta.add(new JLabel("Precio Mínimo ($):"));
+        JLabel label_4 = new JLabel("Precio Mínimo ($):");
+        label_4.setBackground(new Color(238, 181, 251));
+        panelSubasta.add(label_4);
         txtPrecio = new JTextField();
+        txtPrecio.setBackground(new Color(145, 78, 184));
         panelSubasta.add(txtPrecio);
         panelDinamico.add(panelSubasta, "SUBASTA");
 
@@ -75,9 +89,12 @@ public class CrearPublicacionView extends JFrame {
         panelForm.add(panelDinamico);
 
         // --- Sección de Fotos ---
-        panelForm.add(new JLabel("Fotos del Artículo:"));
+        JLabel label_3 = new JLabel("Fotos del Artículo:");
+        label_3.setBackground(new Color(145, 78, 184));
+        panelForm.add(label_3);
 
         JButton btnAgregarFoto = new JButton("📷 Seleccionar Imágenes");
+        btnAgregarFoto.setBackground(new Color(206, 244, 253));
         btnAgregarFoto.addActionListener(e -> seleccionarImagenes());
         panelForm.add(btnAgregarFoto);
 
@@ -91,16 +108,17 @@ public class CrearPublicacionView extends JFrame {
         // Listener para cambiar campos
         cmbTipo.addActionListener(e -> cardLayout.show(panelDinamico, (String) cmbTipo.getSelectedItem()));
 
-        add(panelForm, BorderLayout.CENTER);
+        getContentPane().add(panelForm, BorderLayout.CENTER);
 
         // =======================================================
         //         🆕 PANEL INFERIOR CON BOTÓN CERRAR + PUBLICAR
         // =======================================================
 
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+        panelInferior.setBackground(new Color(145, 78, 184));
 
         JButton btnCerrar = new JButton("Cerrar");
-        btnCerrar.setBackground(new Color(200, 50, 50));
+        btnCerrar.setBackground(new Color(254, 150, 252));
         btnCerrar.setForeground(Color.WHITE);
         btnCerrar.setFont(new Font("Arial", Font.BOLD, 13));
         btnCerrar.addActionListener(e -> dispose());
@@ -114,7 +132,7 @@ public class CrearPublicacionView extends JFrame {
         panelInferior.add(btnCerrar);
         panelInferior.add(btnPublicar);
 
-        add(panelInferior, BorderLayout.SOUTH);
+        getContentPane().add(panelInferior, BorderLayout.SOUTH);
     }
 
     private void seleccionarImagenes() {
