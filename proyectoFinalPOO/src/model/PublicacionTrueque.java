@@ -1,3 +1,10 @@
+/*
+ * Nombre de la clase:
+ * Autor: Angel 
+ * Descripción: Modela una oferta basada en intercambio, incorporando un listado de objetos deseados.
+ */
+
+
 package model;
 
 import java.util.List;
