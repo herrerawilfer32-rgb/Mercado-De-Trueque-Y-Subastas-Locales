@@ -211,10 +211,11 @@ public class PublicacionService {
      * Busca publicaciones filtradas por la ciudad del vendedor.
      */
     /**
-     * Busca publicaciones con filtros avanzados: Ciudad, Tipo y Rango de Precio.
+     * Busca publicaciones con filtros avanzados: Ciudad, Tipo, Rango de Precio,
+     * Categoría y Condición.
      */
     public List<Publicacion> listarPublicacionesConFiltros(String ciudadQuery, String tipo, Double minPrecio,
-            Double maxPrecio) {
+            Double maxPrecio, String categoria, util.CondicionArticulo condicion) {
         List<Publicacion> todas = buscarPublicacionesActivas();
         List<Publicacion> filtradas = new java.util.ArrayList<>();
 
@@ -254,6 +255,20 @@ public class PublicacionService {
                     if (maxPrecio != null && precio > maxPrecio) {
                         coincide = false;
                     }
+                }
+            }
+
+            // 4. Filtro por Categoría
+            if (coincide && categoria != null && !categoria.equals("TODAS")) {
+                if (p.getCategoria() == null || !p.getCategoria().equals(categoria)) {
+                    coincide = false;
+                }
+            }
+
+            // 5. Filtro por Condición
+            if (coincide && condicion != null) {
+                if (p.getCondicion() == null || !p.getCondicion().equals(condicion)) {
+                    coincide = false;
                 }
             }
 

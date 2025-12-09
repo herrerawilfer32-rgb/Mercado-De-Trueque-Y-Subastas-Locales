@@ -15,7 +15,7 @@ public class PublicacionRepository {
 	// Simulación de la "Base de Datos": Key: idArticulo (String), Value: Objeto
 	// Publicacion
 	private static Map<String, Publicacion> baseDeDatos = new HashMap<>();
-	private static final String RUTA_ARCHIVO = "publicaciones.dat";
+	private static final String RUTA_ARCHIVO = "data/publicaciones.dat";
 
 	public PublicacionRepository() {
 		try {

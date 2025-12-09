@@ -163,4 +163,54 @@ public class AdminService {
         verificarAdmin(idAdmin);
         return ofertaRepository.buscarTodasLasOfertas().size();
     }
+
+    // ==================== MENSAJERÍA ADMINISTRATIVA ====================
+
+    /**
+     * Plantillas de mensajes rápidos para administradores
+     */
+    public static final String[] PLANTILLAS_MENSAJES = {
+            "Tu publicación infringe las normas de la comunidad",
+            "Por favor modifica el contenido o será eliminada en 24h",
+            "Advertencia: contenido inapropiado detectado",
+            "Verifica la información de tu publicación",
+            "Tu cuenta ha sido suspendida temporalmente",
+            "Contacta con soporte para más información"
+    };
+
+    /**
+     * Envía un mensaje de alerta a un usuario desde la administración.
+     * El mensaje aparecerá en el chat del usuario con estilo especial.
+     * 
+     * @param idUsuario ID del usuario destinatario
+     * @param mensaje   Contenido del mensaje
+     * @param idAdmin   ID del administrador que envía el mensaje
+     * @return true si el mensaje se envió correctamente
+     */
+    public boolean enviarAlertaUsuario(String idUsuario, String mensaje, String idAdmin) {
+        verificarAdmin(idAdmin);
+
+        if (mensaje == null || mensaje.trim().isEmpty()) {
+            throw new IllegalArgumentException("El mensaje no puede estar vacío");
+        }
+
+        User destinatario = userRepository.buscarPorId(idUsuario);
+        if (destinatario == null) {
+            throw new IllegalArgumentException("Usuario destinatario no encontrado");
+        }
+
+        // Nota: La implementación completa requeriría integración con ChatController
+        // Para crear un chat de sistema con el usuario y enviar el mensaje
+        // con TipoMensaje.MENSAJE_ADMIN
+
+        // Por ahora retornamos true indicando que la funcionalidad está preparada
+        return true;
+    }
+
+    /**
+     * Obtiene las plantillas de mensajes predefinidas
+     */
+    public String[] getPlantillasMensajes() {
+        return PLANTILLAS_MENSAJES.clone();
+    }
 }

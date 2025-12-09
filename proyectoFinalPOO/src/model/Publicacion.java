@@ -33,6 +33,10 @@ public abstract class Publicacion implements Serializable {
 	private EstadoPublicacion estado;
 	protected TipoPublicacion tipoPublicacion;
 
+	// Nuevos campos: categoría y condición
+	private String categoria;
+	private util.CondicionArticulo condicion;
+
 	// Lista de rutas a las fotos
 	private List<String> fotosPaths;
 
@@ -117,6 +121,22 @@ public abstract class Publicacion implements Serializable {
 
 	public void setTipoPublicacion(TipoPublicacion tipoPublicacion) {
 		this.tipoPublicacion = tipoPublicacion;
+	}
+
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+
+	public util.CondicionArticulo getCondicion() {
+		return condicion;
+	}
+
+	public void setCondicion(util.CondicionArticulo condicion) {
+		this.condicion = condicion;
 	}
 
 	@Override

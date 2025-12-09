@@ -31,13 +31,14 @@ public class MainWindow extends JFrame {
     private JLabel lblBienvenida;
     private JButton btnLoginLogout;
     private JButton btnPanelAdmin; // Nuevo botón admin
+    private JButton btnPerfil; // Botón de perfil de usuario
     private JPanel panelContenedorCards;
     private java.util.List<PublicacionCardPanel> tarjetasActuales;
     private PublicacionCardPanel tarjetaSeleccionada;
 
     // Componentes de Búsqueda
     private JTextField txtBuscarCiudad;
-    private JComboBox<String> cmbTipo;
+    private JComboBox<String> cmbTipo, cmbCategoria, cmbCondicion;
     private JTextField txtMinPrecio;
     private JTextField txtMaxPrecio;
     private JButton btnBuscar;
@@ -51,8 +52,8 @@ public class MainWindow extends JFrame {
 
     public MainWindow(AuthController authController, PublicacionController pubController,
             ChatController chatController, AdminController adminController, ReporteController reporteController) {
-    	setBackground(new Color(255, 255, 255));
-    	setForeground(new Color(235, 203, 129));
+        setBackground(new Color(255, 255, 255));
+        setForeground(new Color(235, 203, 129));
         this.authController = authController;
         this.pubController = pubController;
         this.chatController = chatController;
@@ -82,8 +83,13 @@ public class MainWindow extends JFrame {
         lblBienvenida.setForeground(Color.WHITE);
         header.add(lblBienvenida, BorderLayout.WEST);
 
-        JPanel panelDerechoHeader = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel panelDerechoHeader = new JPanel();
+        panelDerechoHeader.setLayout(new GridLayout(2, 1, 5, 5));
         panelDerechoHeader.setOpaque(false);
+
+        // Primera fila: Tipo, Precio, Ciudad
+        JPanel filaFiltros1 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        filaFiltros1.setOpaque(false);
 
         // --- BUSQUEDA ---
         // 1. Filtro Tipo
@@ -122,6 +128,8 @@ public class MainWindow extends JFrame {
             cmbTipo.setSelectedIndex(0);
             txtMinPrecio.setText("");
             txtMaxPrecio.setText("");
+            cmbCategoria.setSelectedIndex(0);
+            cmbCondicion.setSelectedIndex(0);
             cargarPublicaciones();
         });
 
@@ -140,35 +148,78 @@ public class MainWindow extends JFrame {
         btnPanelAdmin.setForeground(Color.WHITE);
         btnPanelAdmin.addActionListener(e -> abrirPanelAdmin());
 
+        btnPerfil = new JButton("👤 Mi Perfil");
+        btnPerfil.setVisible(false);
+        btnPerfil.setBackground(new Color(52, 152, 219)); // Azul
+        btnPerfil.setForeground(Color.WHITE);
+        btnPerfil.addActionListener(e -> abrirPerfil());
+
         btnLoginLogout = new JButton("Iniciar Sesión");
-        btnLoginLogout.setBackground(new Color(243, 223, 84));
+        btnLoginLogout.setBackground(new Color(46, 204, 113)); // Verde
+        btnLoginLogout.setForeground(Color.WHITE);
         btnLoginLogout.addActionListener(e -> manejarSesion());
 
-        // Agregar componentes al panel derecho
         JLabel label = new JLabel("Tipo:");
         label.setForeground(new Color(235, 203, 129));
-        panelDerechoHeader.add(label);
-        panelDerechoHeader.add(cmbTipo);
+        filaFiltros1.add(label);
+        filaFiltros1.add(cmbTipo);
         JLabel label_1 = new JLabel("Precio:");
         label_1.setForeground(new Color(235, 203, 129));
-        panelDerechoHeader.add(label_1);
-        panelDerechoHeader.add(txtMinPrecio);
+        filaFiltros1.add(label_1);
+        filaFiltros1.add(txtMinPrecio);
         JLabel label_3 = new JLabel("-");
         label_3.setForeground(new Color(235, 203, 129));
-        panelDerechoHeader.add(label_3);
-        panelDerechoHeader.add(txtMaxPrecio);
+        filaFiltros1.add(label_3);
+        filaFiltros1.add(txtMaxPrecio);
         JLabel label_2 = new JLabel("Ciudad:");
         label_2.setForeground(new Color(235, 203, 129));
-        panelDerechoHeader.add(label_2);
-        panelDerechoHeader.add(txtBuscarCiudad);
-        panelDerechoHeader.add(btnBuscar);
-        panelDerechoHeader.add(btnLimpiar);
+        filaFiltros1.add(label_2);
+        filaFiltros1.add(txtBuscarCiudad);
+
+        // Segunda fila: Categoría, Condición, Botones
+
+        JPanel filaFiltros2 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        filaFiltros2.setOpaque(false);
+
+        // Categoría
+        JLabel lblCategoria = new JLabel("Categoría:");
+        lblCategoria.setForeground(new Color(235, 203, 129));
+        filaFiltros2.add(lblCategoria);
+
+        persistence.ConfiguracionRepository configRepo = new persistence.ConfiguracionRepository();
+        java.util.List<String> categorias = new java.util.ArrayList<>();
+        categorias.add("TODAS");
+        categorias.addAll(configRepo.obtenerConfiguracion().getCategorias());
+        cmbCategoria = new JComboBox<>(categorias.toArray(new String[0]));
+        filaFiltros2.add(cmbCategoria);
+
+        // Condición
+        JLabel lblCondicion = new JLabel("Condición:");
+        lblCondicion.setForeground(new Color(235, 203, 129));
+        filaFiltros2.add(lblCondicion);
+
+        cmbCondicion = new JComboBox<>(new String[] {
+                "TODAS",
+                "Nuevo",
+                "Usado como nuevo",
+                "Usado buen estado",
+                "Aceptable"
+        });
+        filaFiltros2.add(cmbCondicion);
+
+        filaFiltros2.add(btnBuscar);
+        filaFiltros2.add(btnLimpiar);
         JLabel label_4 = new JLabel("  |  ");
         label_4.setForeground(new Color(235, 203, 129));
-        panelDerechoHeader.add(label_4);
-        panelDerechoHeader.add(btnPanelAdmin);
-        panelDerechoHeader.add(btnNotificaciones);
-        panelDerechoHeader.add(btnLoginLogout);
+        filaFiltros2.add(label_4);
+        filaFiltros2.add(btnPanelAdmin);
+        filaFiltros2.add(btnNotificaciones);
+        filaFiltros2.add(btnPerfil);
+        filaFiltros2.add(btnLoginLogout);
+
+        // Agregar filas al panel derecho
+        panelDerechoHeader.add(filaFiltros1);
+        panelDerechoHeader.add(filaFiltros2);
 
         JPanel panelDerecha = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         panelDerecha.setOpaque(false);
@@ -242,6 +293,9 @@ public class MainWindow extends JFrame {
 
         pestañasCentro.addTab("Chats", splitChats);
 
+        // ==== TAB ADMIN (se agregará dinámicamente cuando el usuario sea admin) ====
+        // El tab se agrega/remueve en setUsuarioLogueado()
+
         getContentPane().add(pestañasCentro, BorderLayout.CENTER);
 
         // --- FOOTER: BOTONES DE ACCIÓN ---
@@ -303,6 +357,7 @@ public class MainWindow extends JFrame {
         footer.add(btnVerDetalle);
         footer.add(btnEditar);
         footer.add(btnEliminar);
+
         footer.add(btnSalirApp);
 
         getContentPane().add(footer, BorderLayout.SOUTH);
@@ -318,6 +373,12 @@ public class MainWindow extends JFrame {
 
         String ciudad = txtBuscarCiudad.getText();
         String tipo = (String) cmbTipo.getSelectedItem();
+        String categoriaStr = (String) cmbCategoria.getSelectedItem();
+        String condicionStr = (String) cmbCondicion.getSelectedItem();
+
+        String categoria = (categoriaStr != null && !categoriaStr.equals("TODAS")) ? categoriaStr : null;
+        util.CondicionArticulo condicion = convertirCondicionDesdeTexto(condicionStr);
+
         Double min = null;
         Double max = null;
 
@@ -330,7 +391,8 @@ public class MainWindow extends JFrame {
             // Ignorar error de parseo, simplemente no filtra por precio
         }
 
-        List<Publicacion> lista = pubController.listarPublicacionesConFiltros(ciudad, tipo, min, max);
+        List<Publicacion> lista = pubController.listarPublicacionesConFiltros(ciudad, tipo, min, max, categoria,
+                condicion);
 
         if (lista != null) {
             if (lista.isEmpty()) {
@@ -473,6 +535,16 @@ public class MainWindow extends JFrame {
         }
     }
 
+    private void abrirPerfil() {
+        if (usuarioLogueado != null) {
+            // Crear un UserController para pasar a la vista de perfil
+            controller.UserController userController = new controller.UserController(
+                    new service.UserService(new persistence.UserRepository()));
+            // Mostrar vista de solo lectura del propio perfil
+            new PerfilUsuarioView(this, usuarioLogueado, userController, false, true).setVisible(true);
+        }
+    }
+
     private void manejarSesion() {
         if (esInvitado()) {
             new LoginWindow(authController, this);
@@ -490,17 +562,28 @@ public class MainWindow extends JFrame {
         if (user != null) {
             lblBienvenida.setText("Hola, " + user.getNombre());
             btnLoginLogout.setText("Cerrar Sesión");
+            btnPerfil.setVisible(true); // Mostrar botón de perfil
 
             // Mostrar botón admin si corresponde
             if (user.isAdmin()) {
                 btnPanelAdmin.setVisible(true);
+
+                // Agregar pestaña de administración
+                agregarPestañaAdmin();
             } else {
                 btnPanelAdmin.setVisible(false);
+
+                // Remover pestaña de administración si existe
+                removerPestañaAdmin();
             }
         } else {
             lblBienvenida.setText("Bienvenido, Invitado");
             btnLoginLogout.setText("Iniciar Sesión");
             btnPanelAdmin.setVisible(false);
+            btnPerfil.setVisible(false); // Ocultar botón de perfil
+
+            // Remover pestaña de administración
+            removerPestañaAdmin();
         }
 
         // 🔄 Actualizar módulo de chat cuando cambia el usuario
@@ -604,6 +687,61 @@ public class MainWindow extends JFrame {
         if (opcion == JOptionPane.YES_OPTION) {
             dispose(); // Cierra la ventana principal
             System.exit(0); // Termina el proceso Java
+        }
+    }
+
+    /**
+     * Convierte el texto de condición del combo box al enum CondicionArticulo.
+     */
+    private util.CondicionArticulo convertirCondicionDesdeTexto(String condicionStr) {
+        if (condicionStr == null || condicionStr.equals("TODAS")) {
+            return null;
+        }
+        switch (condicionStr) {
+            case "Nuevo":
+                return util.CondicionArticulo.NUEVO;
+            case "Usado como nuevo":
+                return util.CondicionArticulo.USADO_COMO_NUEVO;
+            case "Usado buen estado":
+                return util.CondicionArticulo.USADO_BUEN_ESTADO;
+            case "Aceptable":
+                return util.CondicionArticulo.ACEPTABLE;
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Agrega la pestaña de administración al panel de pestañas.
+     */
+    private void agregarPestañaAdmin() {
+        // Verificar si ya existe la pestaña
+        for (int i = 0; i < pestañasCentro.getTabCount(); i++) {
+            if (pestañasCentro.getTitleAt(i).equals("🛠️ Admin")) {
+                return; // Ya existe
+            }
+        }
+
+        // Crear panel de admin
+        try {
+            AdminDashboardView adminPanel = new AdminDashboardView(adminController, reporteController, usuarioLogueado);
+            // Usar el contenido del AdminDashboardView sin crear nueva ventana
+            pestañasCentro.addTab("🛠️ Admin", adminPanel.getContentPane());
+        } catch (Exception e) {
+            System.err.println("Error creando pestaña admin: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Remueve la pestaña de administración si existe.
+     */
+    private void removerPestañaAdmin() {
+        for (int i = 0; i < pestañasCentro.getTabCount(); i++) {
+            if (pestañasCentro.getTitleAt(i).equals("🛠️ Admin")) {
+                pestañasCentro.removeTabAt(i);
+                return;
+            }
         }
     }
 }

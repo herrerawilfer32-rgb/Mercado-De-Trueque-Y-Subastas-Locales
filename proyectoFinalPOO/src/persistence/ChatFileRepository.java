@@ -22,7 +22,7 @@ import model.chat.Chat;
 public class ChatFileRepository implements ChatRepository {
 
     // Nombre del archivo donde se almacenan los chats
-    private static final String RUTA_ARCHIVO = "chats.dat";
+    private static final String RUTA_ARCHIVO = "data/chats.dat";
 
     // Lista en memoria con todos los chats
     private List<Chat> listaChats;
@@ -101,9 +101,9 @@ public class ChatFileRepository implements ChatRepository {
         }
 
         for (Chat chat : listaChats) {
-            boolean coincideMismaPareja =
-                    (chat.getUsuarioEmisor().equals(usuarioA) && chat.getUsuarioReceptor().equals(usuarioB))
-                 || (chat.getUsuarioEmisor().equals(usuarioB) && chat.getUsuarioReceptor().equals(usuarioA));
+            boolean coincideMismaPareja = (chat.getUsuarioEmisor().equals(usuarioA)
+                    && chat.getUsuarioReceptor().equals(usuarioB))
+                    || (chat.getUsuarioEmisor().equals(usuarioB) && chat.getUsuarioReceptor().equals(usuarioA));
             if (coincideMismaPareja) {
                 return chat;
             }
@@ -121,9 +121,8 @@ public class ChatFileRepository implements ChatRepository {
         }
 
         for (Chat chat : listaChats) {
-            boolean usuarioParticipa =
-                    chat.getUsuarioEmisor().equals(usuario)
-                 || chat.getUsuarioReceptor().equals(usuario);
+            boolean usuarioParticipa = chat.getUsuarioEmisor().equals(usuario)
+                    || chat.getUsuarioReceptor().equals(usuario);
             if (usuarioParticipa) {
                 resultado.add(chat);
             }

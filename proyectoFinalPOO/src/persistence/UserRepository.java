@@ -8,7 +8,7 @@ import java.io.IOException;
 public class UserRepository {
     // La "Base de Datos" simulada: Key: nombreUsuario (String), Value: Objeto User
     private static Map<String, User> baseDeDatos = new HashMap<>();
-    private static final String RUTA_ARCHIVO = "users.dat";
+    private static final String RUTA_ARCHIVO = "data/users.dat";
 
     // Bloque estático con datos de prueba
     static {

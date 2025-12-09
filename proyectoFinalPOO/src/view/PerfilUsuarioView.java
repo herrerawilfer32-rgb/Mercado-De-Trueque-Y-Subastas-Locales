@@ -8,10 +8,18 @@ import java.awt.*;
 
 public class PerfilUsuarioView extends JDialog {
 
+    private User usuario;
+    private UserController userController;
+    private Frame parent;
+
     public PerfilUsuarioView(Frame parent, User usuario, UserController userController, boolean puedeCalificar,
-            String idPublicacion, User usuarioCalificador) {
-        super(parent, "Perfil de Usuario", true);
-        setSize(400, 350);
+            String idPublicacion, User usuarioCalificador, boolean esPropioPerfil) {
+        super(parent, esPropioPerfil ? "Mi Perfil" : "Perfil de Usuario", true);
+        this.parent = parent;
+        this.usuario = usuario;
+        this.userController = userController;
+
+        setSize(400, esPropioPerfil ? 400 : 350);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
@@ -94,11 +102,36 @@ public class PerfilUsuarioView extends JDialog {
             });
             panelBoton.add(btnCalificar);
             add(panelBoton, BorderLayout.SOUTH);
+        } else if (esPropioPerfil) {
+            // Botón Editar para el propio perfil
+            JPanel panelBoton = new JPanel();
+            JButton btnEditar = new JButton("✏️ Editar Perfil");
+            btnEditar.setBackground(new Color(52, 152, 219)); // Azul
+            btnEditar.setForeground(Color.WHITE);
+            btnEditar.setFont(new Font("SansSerif", Font.BOLD, 12));
+            btnEditar.addActionListener(e -> {
+                dispose(); // Cerrar vista actual
+                new EditarPerfilView(this.parent, usuario, userController).setVisible(true);
+            });
+            panelBoton.add(btnEditar);
+            add(panelBoton, BorderLayout.SOUTH);
         }
     }
 
-    // Constructor de compatibilidad (o para solo ver perfil)
+    // Constructor para ver perfil propio
+    public PerfilUsuarioView(Frame parent, User usuario, UserController userController, boolean puedeCalificar,
+            boolean esPropioPerfil) {
+        this(parent, usuario, userController, puedeCalificar, null, null, esPropioPerfil);
+    }
+
+    // Constructor para calificar a otro usuario
+    public PerfilUsuarioView(Frame parent, User usuario, UserController userController, boolean puedeCalificar,
+            String idPublicacion, User usuarioCalificador) {
+        this(parent, usuario, userController, puedeCalificar, idPublicacion, usuarioCalificador, false);
+    }
+
+    // Constructor de compatibilidad (o para solo ver perfil de otro)
     public PerfilUsuarioView(Frame parent, User usuario, UserController userController, boolean puedeCalificar) {
-        this(parent, usuario, userController, puedeCalificar, null, null);
+        this(parent, usuario, userController, puedeCalificar, null, null, false);
     }
 }

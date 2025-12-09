@@ -41,13 +41,15 @@ public class PublicacionController {
     }
 
     public boolean crearSubasta(String titulo, String descripcion, User vendedor, double precioMinimo,
-            int diasDuracion, List<String> fotosPaths) {
+            int diasDuracion, List<String> fotosPaths, String categoria, util.CondicionArticulo condicion) {
         try {
             Date fechaVencimiento = new Date(System.currentTimeMillis() + (diasDuracion * 86400000L));
 
             PublicacionSubasta subasta = new PublicacionSubasta(
                     generarId(), titulo, descripcion, vendedor.getId(), fotosPaths, precioMinimo, fechaVencimiento,
                     fechaVencimiento);
+            subasta.setCategoria(categoria);
+            subasta.setCondicion(condicion);
 
             publicacionService.guardarPublicacion(subasta);
             return true;
@@ -58,10 +60,12 @@ public class PublicacionController {
     }
 
     public boolean crearTrueque(String titulo, String descripcion, User vendedor, String objetosDeseados,
-            List<String> fotosPaths) {
+            List<String> fotosPaths, String categoria, util.CondicionArticulo condicion) {
         try {
             PublicacionTrueque trueque = new PublicacionTrueque(
                     generarId(), titulo, descripcion, vendedor.getId(), fotosPaths, objetosDeseados);
+            trueque.setCategoria(categoria);
+            trueque.setCondicion(condicion);
 
             publicacionService.guardarPublicacion(trueque);
             return true;
@@ -410,8 +414,9 @@ public class PublicacionController {
     }
 
     public List<model.Publicacion> listarPublicacionesConFiltros(String ciudad, String tipo, Double minPrecio,
-            Double maxPrecio) {
-        return publicacionService.listarPublicacionesConFiltros(ciudad, tipo, minPrecio, maxPrecio);
+            Double maxPrecio, String categoria, util.CondicionArticulo condicion) {
+        return publicacionService.listarPublicacionesConFiltros(ciudad, tipo, minPrecio, maxPrecio, categoria,
+                condicion);
     }
 
     public service.UserService getUserService() {

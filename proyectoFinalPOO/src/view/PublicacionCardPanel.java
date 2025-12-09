@@ -83,6 +83,29 @@ public class PublicacionCardPanel extends JPanel {
         }
         lblTipo.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        // Categoría
+        JLabel lblCategoria = new JLabel();
+        if (publicacion.getCategoria() != null && !publicacion.getCategoria().isEmpty()) {
+            lblCategoria.setText("🏷️ " + publicacion.getCategoria());
+        } else {
+            lblCategoria.setText("🏷️ Sin categoría");
+        }
+        lblCategoria.setFont(new Font("SansSerif", Font.PLAIN, 10));
+        lblCategoria.setForeground(new Color(100, 100, 100));
+        lblCategoria.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // Condición
+        JLabel lblCondicion = new JLabel();
+        if (publicacion.getCondicion() != null) {
+            String condicionTexto = convertirCondicionATexto(publicacion.getCondicion());
+            lblCondicion.setText("✨ " + condicionTexto);
+        } else {
+            lblCondicion.setText("✨ Sin especificar");
+        }
+        lblCondicion.setFont(new Font("SansSerif", Font.PLAIN, 10));
+        lblCondicion.setForeground(new Color(100, 100, 100));
+        lblCondicion.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         // Título
         JLabel lblTitulo = new JLabel("<html><b>" + truncate(publicacion.getTitulo(), 25) + "</b></html>");
         lblTitulo.setFont(new Font("SansSerif", Font.PLAIN, 14));
@@ -149,8 +172,11 @@ public class PublicacionCardPanel extends JPanel {
         lblEstado.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // Agregar componentes al panel de info
-        // Agregar componentes al panel de info
         panelInfo.add(lblTipo);
+        panelInfo.add(Box.createVerticalStrut(3));
+        panelInfo.add(lblCategoria);
+        panelInfo.add(Box.createVerticalStrut(2));
+        panelInfo.add(lblCondicion);
         panelInfo.add(Box.createVerticalStrut(5));
         panelInfo.add(lblTitulo);
         panelInfo.add(Box.createVerticalStrut(3));
@@ -237,6 +263,21 @@ public class PublicacionCardPanel extends JPanel {
         if (text.length() <= maxLength)
             return text;
         return text.substring(0, maxLength) + "...";
+    }
+
+    private String convertirCondicionATexto(util.CondicionArticulo condicion) {
+        switch (condicion) {
+            case NUEVO:
+                return "Nuevo";
+            case USADO_COMO_NUEVO:
+                return "Usado como nuevo";
+            case USADO_BUEN_ESTADO:
+                return "Usado buen estado";
+            case ACEPTABLE:
+                return "Aceptable";
+            default:
+                return "Sin especificar";
+        }
     }
 
 }

@@ -23,7 +23,8 @@ public class Mensaje implements Serializable {
     public enum TipoMensaje {
         NORMAL,
         BOTON_PAGAR_SUBASTA,
-        BOTON_CONFIRMAR_TRUEQUE
+        BOTON_CONFIRMAR_TRUEQUE,
+        MENSAJE_ADMIN // Mensajes enviados por administradores
     }
 
     // Atributos principales
@@ -54,7 +55,8 @@ public class Mensaje implements Serializable {
     }
 
     /**
-     * Constructor extendido, permitiendo indicar tipo de mensaje y publicación asociada.
+     * Constructor extendido, permitiendo indicar tipo de mensaje y publicación
+     * asociada.
      */
     public Mensaje(
             String identificadorMensaje,

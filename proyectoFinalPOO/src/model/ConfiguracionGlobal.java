@@ -17,6 +17,7 @@ public class ConfiguracionGlobal implements java.io.Serializable {
     private int maxImagenesPorPublicacion;
     private boolean permitirOfertasAnonimas;
     private int tiempoExpiracionOfertaHoras;
+    private java.util.List<String> categorias;
 
     /**
      * Constructor con valores por defecto
@@ -27,6 +28,19 @@ public class ConfiguracionGlobal implements java.io.Serializable {
         this.maxImagenesPorPublicacion = 5;
         this.permitirOfertasAnonimas = false;
         this.tiempoExpiracionOfertaHoras = 48;
+
+        // Categorías por defecto
+        this.categorias = new java.util.ArrayList<>();
+        this.categorias.add("Electrónica");
+        this.categorias.add("Ropa y Accesorios");
+        this.categorias.add("Hogar y Jardín");
+        this.categorias.add("Deportes");
+        this.categorias.add("Libros y Música");
+        this.categorias.add("Juguetes y Juegos");
+        this.categorias.add("Vehículos");
+        this.categorias.add("Inmuebles");
+        this.categorias.add("Servicios");
+        this.categorias.add("Otros");
     }
 
     // Getters
@@ -77,5 +91,25 @@ public class ConfiguracionGlobal implements java.io.Serializable {
         if (tiempoExpiracionOfertaHoras > 0) {
             this.tiempoExpiracionOfertaHoras = tiempoExpiracionOfertaHoras;
         }
+    }
+
+    public java.util.List<String> getCategorias() {
+        return new java.util.ArrayList<>(categorias);
+    }
+
+    public void setCategorias(java.util.List<String> categorias) {
+        if (categorias != null) {
+            this.categorias = new java.util.ArrayList<>(categorias);
+        }
+    }
+
+    public void agregarCategoria(String categoria) {
+        if (categoria != null && !categoria.trim().isEmpty() && !categorias.contains(categoria)) {
+            this.categorias.add(categoria);
+        }
+    }
+
+    public void eliminarCategoria(String categoria) {
+        this.categorias.remove(categoria);
     }
 }

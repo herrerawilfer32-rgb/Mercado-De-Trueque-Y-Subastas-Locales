@@ -13,7 +13,7 @@ public class OfertaRepository {
 
 	// 1. Base de datos principal (busqueda por ID de oferta)
 	private static Map<String, Oferta> baseDeDatos = new HashMap<>();
-	private static final String RUTA_ARCHIVO = "ofertas.dat";
+	private static final String RUTA_ARCHIVO = "data/ofertas.dat";
 
 	// 2. Indice secundario (Busqueda por publicacion)
 	// HashMap<String, List<Oferta>

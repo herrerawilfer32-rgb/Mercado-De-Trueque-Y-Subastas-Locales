@@ -146,6 +146,19 @@ public class User implements Serializable {
         this.contraseñaHash = contraseñaHash;
     }
 
+    // Alias para compatibilidad
+    public String getEmail() {
+        return getCorreo();
+    }
+
+    public void setEmail(String email) {
+        setCorreo(email);
+    }
+
+    public void setPassword(String password) {
+        setContraseñaHash(password);
+    }
+
     public String getId() {
         return id;
     }

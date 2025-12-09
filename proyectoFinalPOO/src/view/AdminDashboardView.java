@@ -30,13 +30,37 @@ public class AdminDashboardView extends JFrame {
         // ---------- PESTAÑAS PRINCIPALES ----------
         JTabbedPane tabbedPane = new JTabbedPane();
 
+        // Panel Analíticas (NUEVO)
+        try {
+            service.AnalyticsService analyticsService = new service.AnalyticsService(
+                    new persistence.PublicacionRepository(),
+                    new persistence.OfertaRepository(),
+                    new persistence.UserRepository());
+            tabbedPane.addTab("📊 Analíticas",
+                    new PanelAnaliticas(adminController, analyticsService, adminUser.getId()));
+        } catch (Exception e) {
+            System.err.println("Error creando panel de analíticas: " + e.getMessage());
+        }
+
+        // Panel Gestión de Publicaciones (NUEVO)
+        try {
+            service.AdminService adminService = new service.AdminService(
+                    new persistence.UserRepository(),
+                    new persistence.PublicacionRepository(),
+                    new persistence.OfertaRepository());
+            tabbedPane.addTab("📝 Publicaciones",
+                    new PanelGestionPublicaciones(adminController, adminService, adminUser.getId()));
+        } catch (Exception e) {
+            System.err.println("Error creando panel de publicaciones: " + e.getMessage());
+        }
+
         // Panel Usuarios
-        tabbedPane.addTab("Gestión de Usuarios", new PanelGestionUsuarios(adminController, adminUser));
+        tabbedPane.addTab("👥 Usuarios", new PanelGestionUsuarios(adminController, adminUser));
 
         // Panel Reportes
-        tabbedPane.addTab("Gestión de Reportes", new PanelGestionReportes(reporteController, adminUser));
+        tabbedPane.addTab("🚨 Reportes", new PanelGestionReportes(reporteController, adminUser));
 
-        // Panel Estadísticas (Simple por ahora)
+        // Panel Estadísticas Básicas
         JPanel panelStats = new JPanel(new GridLayout(3, 1, 10, 10));
         panelStats.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -54,7 +78,7 @@ public class AdminDashboardView extends JFrame {
         panelStats.add(lblPublicaciones);
         panelStats.add(lblOfertas);
 
-        tabbedPane.addTab("Estadísticas", panelStats);
+        tabbedPane.addTab("📈 Estadísticas", panelStats);
 
         // Añadimos las pestañas al centro de la ventana
         add(tabbedPane, BorderLayout.CENTER);

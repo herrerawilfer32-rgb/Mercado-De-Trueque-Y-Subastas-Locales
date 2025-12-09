@@ -48,4 +48,19 @@ public class UserController {
             return false;
         }
     }
+
+    /**
+     * Actualiza el perfil del usuario (nombre, apellido, email, ubicación,
+     * contraseña).
+     * No permite modificar username, ID, rol o reputación.
+     */
+    public boolean actualizarPerfil(User usuario) {
+        try {
+            userService.actualizarUsuario(usuario);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

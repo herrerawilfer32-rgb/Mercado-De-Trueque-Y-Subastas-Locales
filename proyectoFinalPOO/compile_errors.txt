@@ -1,0 +1,128 @@
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\model\Publicacion.java:38: error: cannot find symbol
+	private util.CondicionArticulo condicion;
+	            ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\model\Publicacion.java:134: error: cannot find symbol
+	public util.CondicionArticulo getCondicion() {
+	           ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\model\Publicacion.java:138: error: cannot find symbol
+	public void setCondicion(util.CondicionArticulo condicion) {
+	                             ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\controller\PublicacionController.java:44: error: cannot find symbol
+            int diasDuracion, List<String> fotosPaths, String categoria, util.CondicionArticulo condicion) {
+                                                                             ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\controller\PublicacionController.java:63: error: cannot find symbol
+            List<String> fotosPaths, String categoria, util.CondicionArticulo condicion) {
+                                                           ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\controller\PublicacionController.java:417: error: cannot find symbol
+            Double maxPrecio, String categoria, util.CondicionArticulo condicion) {
+                                                    ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\service\PublicacionService.java:218: error: cannot find symbol
+            Double maxPrecio, String categoria, util.CondicionArticulo condicion) {
+                                                    ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\CrearPublicacionView.java:323: error: cannot find symbol
+    private util.CondicionArticulo convertirCondicion(String condicionStr) {
+                ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\MainWindow.java:684: error: cannot find symbol
+    private util.CondicionArticulo convertirCondicionDesdeTexto(String condicionStr) {
+                ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\PublicacionCardPanel.java:268: error: cannot find symbol
+    private String convertirCondicionATexto(util.CondicionArticulo condicion) {
+                                                ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\AdminDashboardView.java:35: error: cannot find symbol
+            service.AnalyticsService analyticsService = new service.AnalyticsService(
+                   ^
+  symbol:   class AnalyticsService
+  location: package service
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\AdminDashboardView.java:35: error: cannot find symbol
+            service.AnalyticsService analyticsService = new service.AnalyticsService(
+                                                                   ^
+  symbol:   class AnalyticsService
+  location: package service
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\AdminDashboardView.java:40: error: cannot find symbol
+                    new PanelAnaliticas(adminController, analyticsService, adminUser.getId()));
+                        ^
+  symbol:   class PanelAnaliticas
+  location: class AdminDashboardView
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\AdminDashboardView.java:52: error: cannot find symbol
+                    new PanelGestionPublicaciones(adminController, adminService, adminUser.getId()));
+                        ^
+  symbol:   class PanelGestionPublicaciones
+  location: class AdminDashboardView
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\CrearPublicacionView.java:259: error: cannot find symbol
+        util.CondicionArticulo condicion = convertirCondicion(condicionStr);
+            ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\CrearPublicacionView.java:326: error: cannot find symbol
+                return util.CondicionArticulo.NUEVO;
+                           ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\CrearPublicacionView.java:328: error: cannot find symbol
+                return util.CondicionArticulo.USADO_COMO_NUEVO;
+                           ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\CrearPublicacionView.java:330: error: cannot find symbol
+                return util.CondicionArticulo.USADO_BUEN_ESTADO;
+                           ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\CrearPublicacionView.java:332: error: cannot find symbol
+                return util.CondicionArticulo.ACEPTABLE;
+                           ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\CrearPublicacionView.java:334: error: cannot find symbol
+                return util.CondicionArticulo.NUEVO;
+                           ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\MainWindow.java:380: error: cannot find symbol
+        util.CondicionArticulo condicion = convertirCondicionDesdeTexto(condicionStr);
+            ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\MainWindow.java:690: error: cannot find symbol
+                return util.CondicionArticulo.NUEVO;
+                           ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\MainWindow.java:692: error: cannot find symbol
+                return util.CondicionArticulo.USADO_COMO_NUEVO;
+                           ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\MainWindow.java:694: error: cannot find symbol
+                return util.CondicionArticulo.USADO_BUEN_ESTADO;
+                           ^
+  symbol:   class CondicionArticulo
+  location: package util
+C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\MainWindow.java:696: error: cannot find symbol
+                return util.CondicionArticulo.ACEPTABLE;
+                           ^
+  symbol:   class CondicionArticulo
+  location: package util
+Note: C:\Users\anfel\Mercado-De-Trueque-Y-Subastas-Locales\proyectoFinalPOO\src\view\DetallePublicacionView.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+25 errors

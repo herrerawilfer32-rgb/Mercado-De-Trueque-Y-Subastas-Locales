@@ -15,14 +15,15 @@ public class CrearPublicacionView extends JFrame {
 
     private JTextField txtTitulo, txtPrecio;
     private JTextArea txtDescripcion, txtDeseos;
-    private JComboBox<String> cmbTipo;
+    private JComboBox<String> cmbTipo, cmbCategoria, cmbCondicion;
     private JPanel panelDinamico;
     private CardLayout cardLayout;
     private java.util.List<String> fotosSeleccionadas; // Lista de rutas de fotos
     private JPanel panelPreviewFotos; // Panel para mostrar previews
+    private persistence.ConfiguracionRepository configRepo;
 
     public CrearPublicacionView(PublicacionController controller, User vendedor, MainWindow mainWindow) {
-    	setBackground(new Color(55, 206, 191));
+        setBackground(new Color(55, 206, 191));
         this.controller = controller;
         this.vendedor = vendedor;
         this.mainWindow = mainWindow;
@@ -34,6 +35,7 @@ public class CrearPublicacionView extends JFrame {
         getContentPane().setLayout(new BorderLayout());
 
         fotosSeleccionadas = new ArrayList<>();
+        configRepo = new persistence.ConfiguracionRepository();
 
         initComponents();
     }
@@ -61,9 +63,35 @@ public class CrearPublicacionView extends JFrame {
         JLabel label_2 = new JLabel("Tipo de Publicación:");
         label_2.setBackground(new Color(145, 78, 184));
         panelForm.add(label_2);
-        cmbTipo = new JComboBox<>(new String[]{"SUBASTA", "TRUEQUE"});
+        cmbTipo = new JComboBox<>(new String[] { "SUBASTA", "TRUEQUE" });
         cmbTipo.setBackground(new Color(238, 181, 251));
         panelForm.add(cmbTipo);
+
+        // --- Categoría ---
+        JLabel lblCategoria = new JLabel("Categoría:");
+        lblCategoria.setBackground(new Color(145, 78, 184));
+        panelForm.add(lblCategoria);
+
+        java.util.List<String> categorias = configRepo.obtenerConfiguracion().getCategorias();
+        categorias.add("+ Agregar nueva categoría...");
+        cmbCategoria = new JComboBox<>(categorias.toArray(new String[0]));
+        cmbCategoria.setBackground(new Color(238, 181, 251));
+        cmbCategoria.addActionListener(e -> manejarSeleccionCategoria());
+        panelForm.add(cmbCategoria);
+
+        // --- Condición del Artículo ---
+        JLabel lblCondicion = new JLabel("Condición del Artículo:");
+        lblCondicion.setBackground(new Color(145, 78, 184));
+        panelForm.add(lblCondicion);
+
+        cmbCondicion = new JComboBox<>(new String[] {
+                "Nuevo",
+                "Usado como nuevo",
+                "Usado buen estado",
+                "Aceptable"
+        });
+        cmbCondicion.setBackground(new Color(238, 181, 251));
+        panelForm.add(cmbCondicion);
 
         // --- Panel Dinámico (Cambia según el combo) ---
         cardLayout = new CardLayout();
@@ -111,7 +139,7 @@ public class CrearPublicacionView extends JFrame {
         getContentPane().add(panelForm, BorderLayout.CENTER);
 
         // =======================================================
-        //         🆕 PANEL INFERIOR CON BOTÓN CERRAR + PUBLICAR
+        // 🆕 PANEL INFERIOR CON BOTÓN CERRAR + PUBLICAR
         // =======================================================
 
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
@@ -187,10 +215,48 @@ public class CrearPublicacionView extends JFrame {
         panelPreviewFotos.repaint();
     }
 
+    private void manejarSeleccionCategoria() {
+        String seleccion = (String) cmbCategoria.getSelectedItem();
+        if (seleccion != null && seleccion.equals("+ Agregar nueva categoría...")) {
+            String nuevaCategoria = JOptionPane.showInputDialog(this,
+                    "Ingrese el nombre de la nueva categoría:",
+                    "Nueva Categoría",
+                    JOptionPane.PLAIN_MESSAGE);
+
+            if (nuevaCategoria != null && !nuevaCategoria.trim().isEmpty()) {
+                model.ConfiguracionGlobal config = configRepo.obtenerConfiguracion();
+                config.agregarCategoria(nuevaCategoria.trim());
+                configRepo.actualizarConfiguracion(config);
+
+                // Recargar el combo
+                cmbCategoria.removeAllItems();
+                for (String cat : config.getCategorias()) {
+                    cmbCategoria.addItem(cat);
+                }
+                cmbCategoria.addItem("+ Agregar nueva categoría...");
+                cmbCategoria.setSelectedItem(nuevaCategoria.trim());
+            } else {
+                cmbCategoria.setSelectedIndex(0);
+            }
+        }
+    }
+
     private void manejarPublicacion() {
         String titulo = txtTitulo.getText().trim();
         String desc = txtDescripcion.getText().trim();
         String tipo = (String) cmbTipo.getSelectedItem();
+        String categoria = (String) cmbCategoria.getSelectedItem();
+        String condicionStr = (String) cmbCondicion.getSelectedItem();
+
+        // Validar categoría
+        if (categoria == null || categoria.equals("+ Agregar nueva categoría...")) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar una categoría válida", "Error de Validación",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Convertir condición string a enum
+        util.CondicionArticulo condicion = convertirCondicion(condicionStr);
 
         String errorMessage = validarCamposComunes(titulo, desc);
         if (errorMessage != null) {
@@ -216,7 +282,9 @@ public class CrearPublicacionView extends JFrame {
                     vendedor,
                     precio,
                     7,
-                    new ArrayList<>(fotosSeleccionadas));
+                    new ArrayList<>(fotosSeleccionadas),
+                    categoria,
+                    condicion);
         } else {
             String deseos = txtDeseos.getText().trim();
 
@@ -231,7 +299,9 @@ public class CrearPublicacionView extends JFrame {
                     desc,
                     vendedor,
                     deseos,
-                    new ArrayList<>(fotosSeleccionadas));
+                    new ArrayList<>(fotosSeleccionadas),
+                    categoria,
+                    condicion);
         }
 
         if (exito) {
@@ -247,6 +317,21 @@ public class CrearPublicacionView extends JFrame {
             dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Error al guardar la publicación.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private util.CondicionArticulo convertirCondicion(String condicionStr) {
+        switch (condicionStr) {
+            case "Nuevo":
+                return util.CondicionArticulo.NUEVO;
+            case "Usado como nuevo":
+                return util.CondicionArticulo.USADO_COMO_NUEVO;
+            case "Usado buen estado":
+                return util.CondicionArticulo.USADO_BUEN_ESTADO;
+            case "Aceptable":
+                return util.CondicionArticulo.ACEPTABLE;
+            default:
+                return util.CondicionArticulo.NUEVO;
         }
     }
 
@@ -301,4 +386,3 @@ public class CrearPublicacionView extends JFrame {
         return null;
     }
 }
-
