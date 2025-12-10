@@ -1,9 +1,9 @@
-/*
+/**
  * Clase: PublicacionTrueque
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Modelo de publicaciÃ³n tipo trueque.
- */
-
+ *  Modelo de publicación tipo trueque.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.2
+ */
 package model;
 
 import java.util.List;
@@ -14,6 +14,17 @@ public class PublicacionTrueque extends Publicacion {
 
 	private String objetosDeseados;
 
+	 /**
+     * Crea una publicación de trueque con toda su información.
+     *
+     * @param idArticulo   Identificador del artículo publicado.
+     * @param titulo       Título de la publicación.
+     * @param descripcion  Descripción del artículo ofrecido.
+     * @param idVendedor   ID del usuario que publica el artículo.
+     * @param fotosPaths   Lista con las rutas de las imágenes asociadas.
+     * @param objetosDeseados Cadena que contiene los objetos deseados,
+     *                        separados por comas.
+     */
 	public PublicacionTrueque(String idArticulo, String titulo, String descripcion,
 			String idVendedor, List<String> fotosPaths,
 			String objetosDeseados) {
