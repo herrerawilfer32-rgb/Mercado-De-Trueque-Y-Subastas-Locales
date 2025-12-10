@@ -1,8 +1,9 @@
-/*
+/**
  * Clase: CrearPublicacionView
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Vista de la interfaz.
- */
+ *Vista encargada de crear nuevas publicaciones de tipo SUBASTA o TRUEQUE.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.1
+ */
 
 package view;
 
@@ -28,6 +29,13 @@ public class CrearPublicacionView extends JFrame {
     private JPanel panelPreviewFotos; // Panel para mostrar previews
     private persistence.ConfiguracionRepository configRepo;
 
+    /**
+     * Construye la vista para crear una nueva publicación.
+     *
+     * @param controller  Controlador que gestiona la creación de publicaciones.
+     * @param vendedor    Usuario que está publicando el artículo.
+     * @param mainWindow  Ventana principal para refrescar la lista tras publicar.
+     */
     public CrearPublicacionView(PublicacionController controller, User vendedor, MainWindow mainWindow) {
         this.controller = controller;
         this.vendedor = vendedor;
@@ -186,7 +194,11 @@ public class CrearPublicacionView extends JFrame {
 
         getContentPane().add(panelInferior, BorderLayout.SOUTH);
     }
-
+/**
+ * Abre un selector de archivos para elegir imágenes del artículo.
+ * Permite selección múltiple y almacena las rutas en la lista interna.
+ * Luego actualiza las miniaturas en pantalla.
+ */
     private void seleccionarImagenes() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setMultiSelectionEnabled(true);
