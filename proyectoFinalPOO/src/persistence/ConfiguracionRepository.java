@@ -1,8 +1,9 @@
-/*
+/**
  * Clase: ConfiguracionRepository
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Repositorio de persistencia.
- */
+ * configuración del repositorio
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.2
+ */
 
 package persistence;
 
@@ -22,6 +23,10 @@ public class ConfiguracionRepository {
         cargarConfiguracion();
     }
 
+     /**
+     * Carga la configuración desde el archivo. 
+     * Si el archivo no existe, está vacío, corrupto o contiene un tipo de objeto incorrecto, se genera una nueva configuración por defecto y se almacena inmediatamente.
+     */
     private void cargarConfiguracion() {
         try {
             Object obj = Persistencia.cargarObjeto(ARCHIVO_CONFIG);
