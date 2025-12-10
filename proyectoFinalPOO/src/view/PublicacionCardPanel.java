@@ -42,8 +42,8 @@ public class PublicacionCardPanel extends JPanel {
                 BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
                 new EmptyBorder(10, 10, 10, 10)));
 
-        setPreferredSize(new Dimension(220, 340));
-        setMaximumSize(new Dimension(220, 340));
+        setPreferredSize(new Dimension(220, 380));
+        setMaximumSize(new Dimension(220, 380));
 
         initComponents();
         addHoverEffect();
@@ -166,9 +166,16 @@ public class PublicacionCardPanel extends JPanel {
         lblVendedor.setForeground(new Color(52, 73, 94));
         lblVendedor.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel lblUbicacion = new JLabel("📍 " + ubicacionVendedor);
-        lblUbicacion.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        lblUbicacion.setForeground(new Color(100, 100, 100));
+        String textoUbicacion = "📍 " + ubicacionVendedor;
+        if (ubicacionVendedor.equals("Desconocida")) {
+            textoUbicacion = "📍 Ubicación no disponible";
+        }
+
+        JLabel lblUbicacion = new JLabel(textoUbicacion);
+        // Made font bolder and slightly larger, changed color to a more visible dark
+        // blue/grey
+        lblUbicacion.setFont(new Font("SansSerif", Font.BOLD, 12));
+        lblUbicacion.setForeground(new Color(60, 60, 60));
         lblUbicacion.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // Estado
@@ -179,19 +186,19 @@ public class PublicacionCardPanel extends JPanel {
 
         // Agregar componentes al panel de info
         panelInfo.add(lblTipo);
-        panelInfo.add(Box.createVerticalStrut(3));
-        panelInfo.add(lblCategoria);
         panelInfo.add(Box.createVerticalStrut(2));
+        panelInfo.add(lblCategoria);
+        panelInfo.add(Box.createVerticalStrut(1));
         panelInfo.add(lblCondicion);
-        panelInfo.add(Box.createVerticalStrut(5));
-        panelInfo.add(lblTitulo);
         panelInfo.add(Box.createVerticalStrut(3));
+        panelInfo.add(lblTitulo);
+        panelInfo.add(Box.createVerticalStrut(1));
         panelInfo.add(lblPrecio);
-        panelInfo.add(Box.createVerticalStrut(5));
+        panelInfo.add(Box.createVerticalStrut(3));
         panelInfo.add(lblDescripcion);
-        panelInfo.add(Box.createVerticalStrut(5));
+        panelInfo.add(Box.createVerticalStrut(3));
         panelInfo.add(lblVendedor);
-        panelInfo.add(Box.createVerticalStrut(2)); // Espacio entre vendedor y ubicación
+        panelInfo.add(Box.createVerticalStrut(1)); // Espacio entre vendedor y ubicación
         panelInfo.add(lblUbicacion);
         panelInfo.add(Box.createVerticalGlue());
 
