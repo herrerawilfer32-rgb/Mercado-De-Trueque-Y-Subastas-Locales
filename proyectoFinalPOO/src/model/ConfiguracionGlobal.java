@@ -1,7 +1,8 @@
-/*
+/**
  * Clase: ConfiguracionGlobal
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Modelo de datos.
+ * Modelo de datos
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.2
  */
 
 package model;
