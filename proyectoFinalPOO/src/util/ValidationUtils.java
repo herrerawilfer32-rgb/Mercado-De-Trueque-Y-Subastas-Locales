@@ -1,16 +1,15 @@
-/*
+/**
  * Clase: ValidationUtils
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Clase utilidad.
- */
+ * Clase utilitaria para validaciones de formularios.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.2
+ */
+
 
 package util;
 
 import java.util.regex.Pattern;
 
-/**
- * Clase utilitaria para validaciones de formularios.
- */
 public class ValidationUtils {
 
     // Patrones de validación
