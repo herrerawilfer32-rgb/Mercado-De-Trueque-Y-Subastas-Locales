@@ -1,9 +1,9 @@
-/*
+/**
  * Clase: Chat
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Modelo de datos.
- */
-
+ * Modelo del chat
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.3
+ */
 package model.chat;
 
 import java.util.ArrayList;
