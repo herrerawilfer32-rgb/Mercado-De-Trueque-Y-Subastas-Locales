@@ -1,8 +1,9 @@
-/*
+/**
  * Clase: User
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Modelo que representa un usuario del sistema.
- */
+ * Modelo que representa un usuario del sistema.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.2
+ */
 
 package model;
 
@@ -14,7 +15,18 @@ import java.util.List;
 import util.RolUsuario;
 
 public class User implements Serializable {
-
+    
+    /**
+     * Crea un nuevo usuario del sistema.
+     *
+     * @param nombreUsuario  identificador para iniciar sesión (username)
+     * @param nombre         nombre real del usuario
+     * @param apellido       apellido real del usuario
+     * @param correo         correo electrónico asociado
+     * @param contraseñaHash contraseña en formato encriptado/hasheado
+     * @param id             documento de identidad del usuario (cédula)
+     * @param ubicacion      ubicación general del usuario
+     */
     private static final long serialVersionUID = 1L;
 
     private String nombreUsuario; // Identificador de Login
