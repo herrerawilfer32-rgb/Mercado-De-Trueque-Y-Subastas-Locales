@@ -1,8 +1,9 @@
-/*
+/**
  * Clase: Persistencia
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Clase utilidad para serializaciÃ³n de objetos.
- */
+ * Clase utilidad para serialización de objetos.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.2
+ */
 
 package persistence;
 
