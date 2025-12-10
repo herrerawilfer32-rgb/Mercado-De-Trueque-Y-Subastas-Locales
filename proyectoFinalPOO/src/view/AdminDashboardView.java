@@ -20,6 +20,13 @@ public class AdminDashboardView extends JFrame {
     private final ReporteController reporteController;
     private final User adminUser;
 
+    /**
+     * Constructor principal del panel de administración.
+     *
+     * @param adminController  controlador administrador
+     * @param reporteController controlador de reportes
+     * @param adminUser usuario administrador autenticado
+     */
     public AdminDashboardView(AdminController adminController, ReporteController reporteController, User adminUser) {
         this.adminController = adminController;
         this.reporteController = reporteController;
@@ -33,6 +40,13 @@ public class AdminDashboardView extends JFrame {
         initUI();
     }
 
+     /**
+     * Inicializa y construye toda la interfaz gráfica del panel.
+     * Se divide en:
+     *  - Encabezado superior
+     *  - Pestañas de diferentes módulos
+     *  - Panel inferior con acciones rápidas (Cerrar)
+     */
     private void initUI() {
         // Encabezado
         JPanel panelEncabezado = new JPanel();
