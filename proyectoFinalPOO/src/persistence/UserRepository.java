@@ -1,8 +1,9 @@
-/*
+/**
  * Clase: UserRepository
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Repositorio de persistencia de usuarios.
- */
+ * Repositorio de persistencia de usuarios.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.2
+ */
 
 package persistence;
 
@@ -28,7 +29,7 @@ public class UserRepository {
                 if (loaded != null && !loaded.isEmpty()) {
                     // Datos cargados exitosamente
                     baseDeDatos = loaded;
-                    System.out.println("✓ Datos de usuarios cargados desde archivo: " + loaded.size() + " usuarios");
+                    System.out.println(" Datos de usuarios cargados desde archivo: " + loaded.size() + " usuarios");
                 } else {
                     // Archivo existe pero está vacío, crear datos de prueba
                     crearDatosDePrueba();
@@ -38,14 +39,14 @@ public class UserRepository {
                 // Solo crear datos de prueba si el archivo NO existe
                 java.io.File archivo = new java.io.File(RUTA_ARCHIVO);
                 if (!archivo.exists()) {
-                    System.out.println("⚠ Archivo de usuarios no encontrado. Creando datos de prueba...");
+                    System.out.println(" Archivo de usuarios no encontrado. Creando datos de prueba...");
                     crearDatosDePrueba();
                 } else {
                     // El archivo existe pero no se puede deserializar
                     // NO sobrescribir, solo mostrar advertencia
-                    System.err.println("⚠ ERROR: No se pudo cargar el archivo de usuarios existente.");
-                    System.err.println("  Archivo: " + RUTA_ARCHIVO);
-                    System.err.println("  Razón: " + e.getMessage());
+                    System.err.println(" ERROR: No se pudo cargar el archivo de usuarios existente.");
+                    System.err.println(" Archivo: " + RUTA_ARCHIVO);
+                    System.err.println(" Razón: " + e.getMessage());
                     System.err.println("  El archivo NO será sobrescrito. Revise la compatibilidad de versiones.");
                     e.printStackTrace();
                 }
@@ -74,9 +75,9 @@ public class UserRepository {
         // Guardar los datos iniciales
         try {
             Persistencia.guardarObjeto(RUTA_ARCHIVO, baseDeDatos);
-            System.out.println("✓ Datos de prueba creados y guardados: " + baseDeDatos.size() + " usuarios");
+            System.out.println(" Datos de prueba creados y guardados: " + baseDeDatos.size() + " usuarios");
         } catch (IOException ex) {
-            System.err.println("⚠ ERROR: No se pudieron guardar los datos de prueba");
+            System.err.println(" ERROR: No se pudieron guardar los datos de prueba");
             ex.printStackTrace();
         }
     }
