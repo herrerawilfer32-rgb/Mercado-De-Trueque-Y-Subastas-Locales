@@ -1,8 +1,9 @@
-/*
+/**
  * Clase: PanelChatDetalle
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Vista de la interfaz.
- */
+ * Vista de la interfaz.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.2
+ */
 
 package view;
 
@@ -412,3 +413,4 @@ public class PanelChatDetalle extends JPanel {
         areaConversacion.setCaretPosition(areaConversacion.getDocument().getLength());
     }
 }
+
