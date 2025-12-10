@@ -40,10 +40,26 @@ public class CrearReporteDialog extends JDialog {
     }
 
     private void initUI() {
+        // Encabezado
+        JPanel panelEncabezado = new JPanel();
+        panelEncabezado.setBackground(util.UIConstants.MORADO_PRINCIPAL);
+        panelEncabezado.setBorder(util.UIConstants.BORDE_VACIO_20);
+
+        JLabel lblTitulo = new JLabel("Crear Reporte");
+        lblTitulo.setFont(util.UIConstants.FUENTE_TITULO);
+        lblTitulo.setForeground(util.UIConstants.DORADO);
+        panelEncabezado.add(lblTitulo);
+
+        add(panelEncabezado, BorderLayout.NORTH);
+
+        // Formulario
         JPanel panelForm = new JPanel(new GridLayout(0, 1, 5, 5));
+        panelForm.setBackground(util.UIConstants.BLANCO);
         panelForm.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        panelForm.add(new JLabel("Tipo de Reporte:"));
+        JLabel lblTipo = new JLabel("Tipo de Reporte:");
+        lblTipo.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelForm.add(lblTipo);
         comboTipo = new JComboBox<>(TipoReporte.values());
         if (tipoReportePredefinido != null) {
             comboTipo.setSelectedItem(tipoReportePredefinido);
@@ -51,20 +67,34 @@ public class CrearReporteDialog extends JDialog {
         }
         panelForm.add(comboTipo);
 
-        panelForm.add(new JLabel("Motivo (Corto):"));
+        JLabel lblMotivo = new JLabel("Motivo (Corto):");
+        lblMotivo.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelForm.add(lblMotivo);
         txtMotivo = new JTextField();
         panelForm.add(txtMotivo);
 
-        panelForm.add(new JLabel("Descripción Detallada:"));
+        JLabel lblDesc = new JLabel("Descripción Detallada:");
+        lblDesc.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelForm.add(lblDesc);
         txtDescripcion = new JTextArea(5, 20);
         txtDescripcion.setLineWrap(true);
         panelForm.add(new JScrollPane(txtDescripcion));
 
         add(panelForm, BorderLayout.CENTER);
 
+        // Botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelBotones.setBackground(util.UIConstants.BLANCO);
+
         JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.setBackground(util.UIConstants.GRIS_NEUTRAL);
+        btnCancelar.setForeground(util.UIConstants.NEGRO);
+        btnCancelar.setFont(util.UIConstants.FUENTE_BOTON);
+
         JButton btnEnviar = new JButton("Enviar Reporte");
+        btnEnviar.setBackground(util.UIConstants.ROJO_PELIGRO);
+        btnEnviar.setForeground(util.UIConstants.BLANCO);
+        btnEnviar.setFont(util.UIConstants.FUENTE_BOTON);
 
         btnCancelar.addActionListener(e -> dispose());
         btnEnviar.addActionListener(e -> enviarReporte());

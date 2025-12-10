@@ -140,6 +140,11 @@ public class PublicacionService {
     /**
      * Recomienda posibles trueques para una publicación de tipo TRUEQUE.
      */
+    /**
+     * Recomienda posibles trueques para una publicación de tipo TRUEQUE.
+     * Utiliza coincidencia de palabras clave entre 'objetosDeseados' y
+     * título/categoría de otras publicaciones.
+     */
     public List<Publicacion> recomendarTrueques(String idPublicacion) {
         Publicacion publicacion = publicacionRepository.buscarPorIdArticulo(idPublicacion);
         if (publicacion == null || publicacion.getTipoPublicacion() != TipoPublicacion.TRUEQUE) {
@@ -149,8 +154,9 @@ public class PublicacionService {
         PublicacionTrueque trueque = (PublicacionTrueque) publicacion;
         String deseos = trueque.getObjetosDeseados().toLowerCase();
 
-        // Búsqueda simple: publicaciones activas cuyo título contenga el texto de
-        // deseos
+        // Separar deseos por comas o espacios para buscar palabras clave
+        String[] palabrasClave = deseos.split("[,\\s]+");
+
         List<Publicacion> activas = publicacionRepository.buscarPublicacionesActivas();
         List<Publicacion> recomendaciones = new java.util.ArrayList<>();
 
@@ -158,7 +164,24 @@ public class PublicacionService {
             if (p.getIdArticulo().equals(idPublicacion)) {
                 continue; // No recomendarse a sí misma
             }
-            if (deseos.contains(p.getTitulo().toLowerCase())) {
+            if (p.getIdVendedor().equals(publicacion.getIdVendedor())) {
+                continue; // No recomendar publicaciones del mismo usuario
+            }
+
+            String titulo = p.getTitulo().toLowerCase();
+            String categoria = p.getCategoria() != null ? p.getCategoria().toLowerCase() : "";
+
+            boolean hayCoincidencia = false;
+            for (String palabra : palabrasClave) {
+                if (palabra.length() > 3) { // Ignorar palabras muy cortas (de, la, el...)
+                    if (titulo.contains(palabra) || categoria.contains(palabra)) {
+                        hayCoincidencia = true;
+                        break;
+                    }
+                }
+            }
+
+            if (hayCoincidencia) {
                 recomendaciones.add(p);
             }
         }

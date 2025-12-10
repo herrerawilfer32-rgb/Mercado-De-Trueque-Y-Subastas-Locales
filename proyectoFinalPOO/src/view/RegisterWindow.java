@@ -37,53 +37,93 @@ public class RegisterWindow extends JFrame {
     }
 
     private void initComponents() {
-        JPanel formPanel = new JPanel(new GridLayout(8, 2, 10, 10));
-        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        // Encabezado
+        JPanel panelEncabezado = new JPanel();
+        panelEncabezado.setBackground(util.UIConstants.MORADO_PRINCIPAL);
+        panelEncabezado.setBorder(util.UIConstants.BORDE_VACIO_20);
 
-        formPanel.add(new JLabel("Cédula (ID):*"));
+        JLabel lblTitulo = new JLabel("Registro de Usuario");
+        lblTitulo.setFont(util.UIConstants.FUENTE_TITULO);
+        lblTitulo.setForeground(util.UIConstants.DORADO);
+        panelEncabezado.add(lblTitulo);
+
+        add(panelEncabezado, BorderLayout.NORTH);
+
+        // Formulario
+        JPanel panelFormulario = new JPanel(new GridLayout(8, 2, 10, 10));
+        panelFormulario.setBackground(util.UIConstants.BLANCO);
+        panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JLabel lblCedula = new JLabel("Cédula (ID):*");
+        lblCedula.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelFormulario.add(lblCedula);
         txtId = new JTextField();
-        formPanel.add(txtId);
+        panelFormulario.add(txtId);
 
-        formPanel.add(new JLabel("Usuario:*"));
+        JLabel lblUsuario = new JLabel("Usuario:*");
+        lblUsuario.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelFormulario.add(lblUsuario);
         txtUsername = new JTextField();
-        formPanel.add(txtUsername);
+        panelFormulario.add(txtUsername);
 
-        formPanel.add(new JLabel("Contraseña:*"));
+        JLabel lblContraseña = new JLabel("Contraseña:*");
+        lblContraseña.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelFormulario.add(lblContraseña);
         txtPassword = new JPasswordField();
-        formPanel.add(txtPassword);
+        panelFormulario.add(txtPassword);
 
-        formPanel.add(new JLabel("Confirmar Contraseña:*"));
+        JLabel lblConfirmar = new JLabel("Confirmar Contraseña:*");
+        lblConfirmar.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelFormulario.add(lblConfirmar);
         txtPasswordConfirm = new JPasswordField();
-        formPanel.add(txtPasswordConfirm);
+        panelFormulario.add(txtPasswordConfirm);
 
-        formPanel.add(new JLabel("Correo:*"));
+        JLabel lblCorreo = new JLabel("Correo:*");
+        lblCorreo.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelFormulario.add(lblCorreo);
         txtCorreo = new JTextField();
-        formPanel.add(txtCorreo);
+        panelFormulario.add(txtCorreo);
 
-        formPanel.add(new JLabel("Nombre:*"));
+        JLabel lblNombre = new JLabel("Nombre:*");
+        lblNombre.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelFormulario.add(lblNombre);
         txtNombre = new JTextField();
-        formPanel.add(txtNombre);
+        panelFormulario.add(txtNombre);
 
-        formPanel.add(new JLabel("Apellido:*"));
+        JLabel lblApellido = new JLabel("Apellido:*");
+        lblApellido.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelFormulario.add(lblApellido);
         txtApellido = new JTextField();
-        formPanel.add(txtApellido);
+        panelFormulario.add(txtApellido);
 
-        formPanel.add(new JLabel("Ciudad:*"));
+        JLabel lblCiudad = new JLabel("Ciudad:*");
+        lblCiudad.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelFormulario.add(lblCiudad);
         txtCiudad = new JTextField();
-        formPanel.add(txtCiudad);
+        panelFormulario.add(txtCiudad);
 
-        add(formPanel, BorderLayout.CENTER);
+        add(panelFormulario, BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        JButton btnRegister = new JButton("Registrarse");
-        JButton btnCancel = new JButton("Cancelar");
+        // Botones
+        JPanel panelBotones = new JPanel(new FlowLayout());
+        panelBotones.setBackground(util.UIConstants.BLANCO);
 
-        btnRegister.addActionListener(e -> handleRegister());
-        btnCancel.addActionListener(e -> dispose());
+        JButton btnRegistrar = new JButton("Registrarse");
+        btnRegistrar.setBackground(util.UIConstants.VERDE_EXITO);
+        btnRegistrar.setForeground(util.UIConstants.BLANCO);
+        btnRegistrar.setFont(util.UIConstants.FUENTE_BOTON);
 
-        buttonPanel.add(btnRegister);
-        buttonPanel.add(btnCancel);
-        add(buttonPanel, BorderLayout.SOUTH);
+        JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.setBackground(util.UIConstants.GRIS_NEUTRAL);
+        btnCancelar.setForeground(util.UIConstants.NEGRO);
+        btnCancelar.setFont(util.UIConstants.FUENTE_BOTON);
+
+        btnRegistrar.addActionListener(e -> handleRegister());
+        btnCancelar.addActionListener(e -> dispose());
+
+        panelBotones.add(btnRegistrar);
+        panelBotones.add(btnCancelar);
+        add(panelBotones, BorderLayout.SOUTH);
     }
 
     private void handleRegister() {

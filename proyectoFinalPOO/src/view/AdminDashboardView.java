@@ -33,10 +33,22 @@ public class AdminDashboardView extends JFrame {
     }
 
     private void initUI() {
-        // ---------- PESTAÑAS PRINCIPALES ----------
+        // Encabezado
+        JPanel panelEncabezado = new JPanel();
+        panelEncabezado.setBackground(util.UIConstants.MORADO_PRINCIPAL);
+        panelEncabezado.setBorder(util.UIConstants.BORDE_VACIO_20);
+
+        JLabel lblTitulo = new JLabel("🛠️ Panel de Administración");
+        lblTitulo.setFont(util.UIConstants.FUENTE_TITULO);
+        lblTitulo.setForeground(util.UIConstants.DORADO);
+        panelEncabezado.add(lblTitulo);
+
+        add(panelEncabezado, BorderLayout.NORTH);
+
+        // Pestañas
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // Panel Analíticas (NUEVO)
+        // Panel Analíticas
         try {
             service.AnalyticsService analyticsService = new service.AnalyticsService(
                     new persistence.PublicacionRepository(),
@@ -48,7 +60,7 @@ public class AdminDashboardView extends JFrame {
             System.err.println("Error creando panel de analíticas: " + e.getMessage());
         }
 
-        // Panel Gestión de Publicaciones (NUEVO)
+        // Panel Gestión de Publicaciones
         try {
             service.AdminService adminService = new service.AdminService(
                     new persistence.UserRepository(),
@@ -66,19 +78,20 @@ public class AdminDashboardView extends JFrame {
         // Panel Reportes
         tabbedPane.addTab("🚨 Reportes", new PanelGestionReportes(reporteController, adminUser));
 
-        // Panel Estadísticas Básicas
+        // Panel Estadísticas
         JPanel panelStats = new JPanel(new GridLayout(3, 1, 10, 10));
+        panelStats.setBackground(util.UIConstants.BLANCO);
         panelStats.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JLabel lblUsuarios = new JLabel("Total Usuarios: " + adminController.contarUsuarios(adminUser.getId()));
-        lblUsuarios.setFont(new Font("Arial", Font.BOLD, 24));
+        lblUsuarios.setFont(util.UIConstants.FUENTE_SUBTITULO);
 
         JLabel lblPublicaciones = new JLabel(
                 "Total Publicaciones: " + adminController.contarPublicaciones(adminUser.getId()));
-        lblPublicaciones.setFont(new Font("Arial", Font.BOLD, 24));
+        lblPublicaciones.setFont(util.UIConstants.FUENTE_SUBTITULO);
 
         JLabel lblOfertas = new JLabel("Total Ofertas: " + adminController.contarOfertas(adminUser.getId()));
-        lblOfertas.setFont(new Font("Arial", Font.BOLD, 24));
+        lblOfertas.setFont(util.UIConstants.FUENTE_SUBTITULO);
 
         panelStats.add(lblUsuarios);
         panelStats.add(lblPublicaciones);
@@ -86,14 +99,17 @@ public class AdminDashboardView extends JFrame {
 
         tabbedPane.addTab("📈 Estadísticas", panelStats);
 
-        // Añadimos las pestañas al centro de la ventana
         add(tabbedPane, BorderLayout.CENTER);
 
-        // ---------- BOTÓN INFERIOR "CERRAR" ----------
+        // Panel Inferior
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+        panelInferior.setBackground(util.UIConstants.MORADO_PRINCIPAL);
 
         JButton btnCerrar = new JButton("Cerrar");
-        btnCerrar.addActionListener(e -> dispose()); // Solo cierra esta ventana de admin
+        btnCerrar.setBackground(util.UIConstants.GRIS_NEUTRAL);
+        btnCerrar.setForeground(util.UIConstants.NEGRO);
+        btnCerrar.setFont(util.UIConstants.FUENTE_BOTON);
+        btnCerrar.addActionListener(e -> dispose());
 
         panelInferior.add(btnCerrar);
 

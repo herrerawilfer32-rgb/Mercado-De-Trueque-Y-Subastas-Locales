@@ -295,6 +295,10 @@ public class PublicacionController {
         return ofertaService.calcularIncrementoRapidoSubasta(subasta.getPrecioMinimo());
     }
 
+    public List<Publicacion> recomendarTrueques(String idPublicacion) {
+        return publicacionService.recomendarTrueques(idPublicacion);
+    }
+
     // ============================================================
     // NUEVO: CONCRETAR INTERCAMBIO Y FINALIZAR SUBASTA CON PAGO
     // ============================================================

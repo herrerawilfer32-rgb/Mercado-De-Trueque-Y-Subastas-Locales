@@ -29,7 +29,6 @@ public class CrearPublicacionView extends JFrame {
     private persistence.ConfiguracionRepository configRepo;
 
     public CrearPublicacionView(PublicacionController controller, User vendedor, MainWindow mainWindow) {
-        setBackground(new Color(55, 206, 191));
         this.controller = controller;
         this.vendedor = vendedor;
         this.mainWindow = mainWindow;
@@ -47,47 +46,60 @@ public class CrearPublicacionView extends JFrame {
     }
 
     private void initComponents() {
-        // --- Formulario Común ---
+        // Encabezado
+        JPanel panelEncabezado = new JPanel();
+        panelEncabezado.setBackground(util.UIConstants.MORADO_PRINCIPAL);
+        panelEncabezado.setBorder(util.UIConstants.BORDE_VACIO_20);
+
+        JLabel lblTitulo = new JLabel("Nueva Publicación");
+        lblTitulo.setFont(util.UIConstants.FUENTE_TITULO);
+        lblTitulo.setForeground(util.UIConstants.DORADO);
+        panelEncabezado.add(lblTitulo);
+
+        getContentPane().add(panelEncabezado, BorderLayout.NORTH);
+
+        // Formulario
         JPanel panelForm = new JPanel(new GridLayout(0, 1, 5, 5));
-        panelForm.setBackground(new Color(145, 78, 184));
+        panelForm.setBackground(util.UIConstants.VERDE_AZULADO);
         panelForm.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JLabel label = new JLabel("Título del Artículo:");
-        label.setBackground(new Color(145, 78, 184));
-        panelForm.add(label);
+        JLabel lblTituloArt = new JLabel("Título del Artículo:");
+        lblTituloArt.setForeground(util.UIConstants.BLANCO);
+        lblTituloArt.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelForm.add(lblTituloArt);
         txtTitulo = new JTextField();
-        txtTitulo.setBackground(new Color(238, 181, 251));
         panelForm.add(txtTitulo);
 
-        JLabel label_1 = new JLabel("Descripción:");
-        label_1.setBackground(new Color(145, 78, 184));
-        panelForm.add(label_1);
+        JLabel lblDesc = new JLabel("Descripción:");
+        lblDesc.setForeground(util.UIConstants.BLANCO);
+        lblDesc.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelForm.add(lblDesc);
         txtDescripcion = new JTextArea(3, 20);
-        txtDescripcion.setBackground(new Color(238, 181, 251));
         panelForm.add(new JScrollPane(txtDescripcion));
 
-        JLabel label_2 = new JLabel("Tipo de Publicación:");
-        label_2.setBackground(new Color(145, 78, 184));
-        panelForm.add(label_2);
+        JLabel lblTipoPub = new JLabel("Tipo de Publicación:");
+        lblTipoPub.setForeground(util.UIConstants.BLANCO);
+        lblTipoPub.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelForm.add(lblTipoPub);
         cmbTipo = new JComboBox<>(new String[] { "SUBASTA", "TRUEQUE" });
-        cmbTipo.setBackground(new Color(238, 181, 251));
         panelForm.add(cmbTipo);
 
-        // --- Categoría ---
+        // Categoría
         JLabel lblCategoria = new JLabel("Categoría:");
-        lblCategoria.setBackground(new Color(145, 78, 184));
+        lblCategoria.setForeground(util.UIConstants.BLANCO);
+        lblCategoria.setFont(util.UIConstants.FUENTE_NORMAL);
         panelForm.add(lblCategoria);
 
         java.util.List<String> categorias = configRepo.obtenerConfiguracion().getCategorias();
         categorias.add("+ Agregar nueva categoría...");
         cmbCategoria = new JComboBox<>(categorias.toArray(new String[0]));
-        cmbCategoria.setBackground(new Color(238, 181, 251));
         cmbCategoria.addActionListener(e -> manejarSeleccionCategoria());
         panelForm.add(cmbCategoria);
 
-        // --- Condición del Artículo ---
+        // Condición
         JLabel lblCondicion = new JLabel("Condición del Artículo:");
-        lblCondicion.setBackground(new Color(145, 78, 184));
+        lblCondicion.setForeground(util.UIConstants.BLANCO);
+        lblCondicion.setFont(util.UIConstants.FUENTE_NORMAL);
         panelForm.add(lblCondicion);
 
         cmbCondicion = new JComboBox<>(new String[] {
@@ -96,47 +108,56 @@ public class CrearPublicacionView extends JFrame {
                 "Usado buen estado",
                 "Aceptable"
         });
-        cmbCondicion.setBackground(new Color(238, 181, 251));
         panelForm.add(cmbCondicion);
 
-        // --- Panel Dinámico (Cambia según el combo) ---
+        // Panel Dinámico
         cardLayout = new CardLayout();
         panelDinamico = new JPanel(cardLayout);
+        panelDinamico.setBackground(util.UIConstants.VERDE_AZULADO);
 
-        // Opción A: Panel Subasta
+        // Panel Subasta
         JPanel panelSubasta = new JPanel(new GridLayout(0, 1));
-        JLabel label_4 = new JLabel("Precio Mínimo ($):");
-        label_4.setBackground(new Color(238, 181, 251));
-        panelSubasta.add(label_4);
+        panelSubasta.setBackground(util.UIConstants.VERDE_AZULADO);
+        JLabel lblPrecio = new JLabel("Precio Mínimo ($):");
+        lblPrecio.setForeground(util.UIConstants.BLANCO);
+        lblPrecio.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelSubasta.add(lblPrecio);
         txtPrecio = new JTextField();
-        txtPrecio.setBackground(new Color(145, 78, 184));
         panelSubasta.add(txtPrecio);
         panelDinamico.add(panelSubasta, "SUBASTA");
 
-        // Opción B: Panel Trueque
+        // Panel Trueque
         JPanel panelTrueque = new JPanel(new GridLayout(0, 1));
-        panelTrueque.add(new JLabel("¿Qué buscas a cambio?"));
+        panelTrueque.setBackground(util.UIConstants.VERDE_AZULADO);
+        JLabel lblDeseos = new JLabel("¿Qué buscas a cambio?");
+        lblDeseos.setForeground(util.UIConstants.BLANCO);
+        lblDeseos.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelTrueque.add(lblDeseos);
         txtDeseos = new JTextArea(2, 20);
         panelTrueque.add(new JScrollPane(txtDeseos));
         panelDinamico.add(panelTrueque, "TRUEQUE");
 
         panelForm.add(panelDinamico);
 
-        // --- Sección de Fotos ---
-        JLabel label_3 = new JLabel("Fotos del Artículo:");
-        label_3.setBackground(new Color(145, 78, 184));
-        panelForm.add(label_3);
+        // Fotos
+        JLabel lblFotos = new JLabel("Fotos del Artículo:");
+        lblFotos.setForeground(util.UIConstants.BLANCO);
+        lblFotos.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelForm.add(lblFotos);
 
         JButton btnAgregarFoto = new JButton("📷 Seleccionar Imágenes");
-        btnAgregarFoto.setBackground(new Color(206, 244, 253));
+        btnAgregarFoto.setBackground(util.UIConstants.MORADO_SECUNDARIO);
+        btnAgregarFoto.setForeground(util.UIConstants.DORADO);
+        btnAgregarFoto.setFont(util.UIConstants.FUENTE_BOTON);
         btnAgregarFoto.addActionListener(e -> seleccionarImagenes());
         panelForm.add(btnAgregarFoto);
 
-        // Panel para mostrar previews de fotos
+        // Panel preview fotos
         panelPreviewFotos = new JPanel();
         panelPreviewFotos.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
         panelPreviewFotos.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         panelPreviewFotos.setPreferredSize(new Dimension(380, 100));
+        panelPreviewFotos.setBackground(util.UIConstants.BLANCO);
         panelForm.add(new JScrollPane(panelPreviewFotos));
 
         // Listener para cambiar campos
@@ -144,23 +165,20 @@ public class CrearPublicacionView extends JFrame {
 
         getContentPane().add(panelForm, BorderLayout.CENTER);
 
-        // =======================================================
-        // 🆕 PANEL INFERIOR CON BOTÓN CERRAR + PUBLICAR
-        // =======================================================
-
+        // Panel Inferior
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
-        panelInferior.setBackground(new Color(145, 78, 184));
+        panelInferior.setBackground(util.UIConstants.MORADO_PRINCIPAL);
 
         JButton btnCerrar = new JButton("Cerrar");
-        btnCerrar.setBackground(new Color(254, 150, 252));
-        btnCerrar.setForeground(Color.WHITE);
-        btnCerrar.setFont(new Font("Arial", Font.BOLD, 13));
+        btnCerrar.setBackground(util.UIConstants.GRIS_NEUTRAL);
+        btnCerrar.setForeground(util.UIConstants.NEGRO);
+        btnCerrar.setFont(util.UIConstants.FUENTE_BOTON);
         btnCerrar.addActionListener(e -> dispose());
 
         JButton btnPublicar = new JButton("PUBLICAR AHORA");
-        btnPublicar.setBackground(new Color(46, 204, 113));
-        btnPublicar.setForeground(Color.WHITE);
-        btnPublicar.setFont(new Font("Arial", Font.BOLD, 14));
+        btnPublicar.setBackground(util.UIConstants.VERDE_EXITO);
+        btnPublicar.setForeground(util.UIConstants.BLANCO);
+        btnPublicar.setFont(util.UIConstants.FUENTE_BOTON);
         btnPublicar.addActionListener(e -> manejarPublicacion());
 
         panelInferior.add(btnCerrar);

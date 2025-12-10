@@ -71,6 +71,7 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().setLayout(new BorderLayout());
+        getContentPane().setBackground(new Color(245, 245, 245)); // Fondo gris claro
 
         initUI();
         cargarPublicaciones(); // MOSTRAR PUBLICACIONES APENAS INICIA
@@ -218,8 +219,8 @@ public class MainWindow extends JFrame {
         JLabel label_4 = new JLabel("  |  ");
         label_4.setForeground(new Color(235, 203, 129));
         filaFiltros2.add(label_4);
-        filaFiltros2.add(btnPanelAdmin);
         filaFiltros2.add(btnNotificaciones);
+        filaFiltros2.add(btnPanelAdmin);
         filaFiltros2.add(btnPerfil);
         filaFiltros2.add(btnLoginLogout);
 
@@ -266,7 +267,7 @@ public class MainWindow extends JFrame {
         panelContenedorCards = new JPanel();
         panelContenedorCards.setForeground(new Color(192, 192, 192));
         panelContenedorCards.setLayout(new GridLayout(0, 3, 15, 15));
-        panelContenedorCards.setBackground(Color.WHITE);
+        panelContenedorCards.setBackground(new Color(245, 245, 245)); // Gris muy claro en lugar de blanco
         panelContenedorCards.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         JScrollPane scrollCards = new JScrollPane(panelContenedorCards);

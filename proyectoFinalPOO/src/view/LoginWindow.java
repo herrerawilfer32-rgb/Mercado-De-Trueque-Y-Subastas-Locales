@@ -16,8 +16,8 @@ public class LoginWindow extends JFrame {
     private final AuthController authController;
     private final MainWindow mainWindow; // Referencia a la ventana principal
 
-    private JTextField usernameField;
-    private JPasswordField passwordField;
+    private JTextField campoUsuario;
+    private JPasswordField campoContraseña;
 
     // Constructor modificado: recibe MainWindow
     public LoginWindow(AuthController authController, MainWindow mainWindow) {
@@ -36,39 +36,71 @@ public class LoginWindow extends JFrame {
     }
 
     private void initComponents() {
+        // Encabezado
+        JPanel panelEncabezado = new JPanel();
+        panelEncabezado.setBackground(util.UIConstants.MORADO_PRINCIPAL);
+        panelEncabezado.setBorder(util.UIConstants.BORDE_VACIO_20);
+
+        JLabel lblTitulo = new JLabel("Iniciar Sesión");
+        lblTitulo.setFont(util.UIConstants.FUENTE_TITULO);
+        lblTitulo.setForeground(util.UIConstants.DORADO);
+        panelEncabezado.add(lblTitulo);
+
+        add(panelEncabezado, BorderLayout.NORTH);
+
         // Panel Central (Formulario)
-        JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 10));
-        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JPanel panelFormulario = new JPanel(new GridLayout(2, 2, 10, 10));
+        panelFormulario.setBackground(util.UIConstants.BLANCO);
+        panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        usernameField = new JTextField();
-        passwordField = new JPasswordField();
+        campoUsuario = new JTextField();
+        campoContraseña = new JPasswordField();
 
-        formPanel.add(new JLabel("Usuario:"));
-        formPanel.add(usernameField);
-        formPanel.add(new JLabel("Contraseña:"));
-        formPanel.add(passwordField);
+        JLabel lblUsuario = new JLabel("Usuario:");
+        lblUsuario.setFont(util.UIConstants.FUENTE_NORMAL);
 
-        add(formPanel, BorderLayout.CENTER);
+        JLabel lblContraseña = new JLabel("Contraseña:");
+        lblContraseña.setFont(util.UIConstants.FUENTE_NORMAL);
+
+        panelFormulario.add(lblUsuario);
+        panelFormulario.add(campoUsuario);
+        panelFormulario.add(lblContraseña);
+        panelFormulario.add(campoContraseña);
+
+        add(panelFormulario, BorderLayout.CENTER);
 
         // Panel Inferior (Botones)
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        JButton btnLogin = new JButton("Entrar");
-        JButton btnRegister = new JButton("Registrarse"); // Nuevo botón
-        JButton btnCancel = new JButton("Cancelar");
+        JPanel panelBotones = new JPanel(new FlowLayout());
+        panelBotones.setBackground(util.UIConstants.BLANCO);
 
-        btnLogin.addActionListener(e -> handleLogin());
-        btnRegister.addActionListener(e -> openRegisterWindow()); // Acción de registro
-        btnCancel.addActionListener(e -> dispose()); // Cierra la ventana sin hacer nada
+        JButton btnEntrar = new JButton("Entrar");
+        btnEntrar.setBackground(util.UIConstants.VERDE_EXITO);
+        btnEntrar.setForeground(util.UIConstants.BLANCO);
+        btnEntrar.setFont(util.UIConstants.FUENTE_BOTON);
 
-        buttonPanel.add(btnLogin);
-        buttonPanel.add(btnRegister);
-        buttonPanel.add(btnCancel);
-        add(buttonPanel, BorderLayout.SOUTH);
+        JButton btnRegistrarse = new JButton("Registrarse");
+        btnRegistrarse.setBackground(util.UIConstants.MORADO_SECUNDARIO);
+        btnRegistrarse.setForeground(util.UIConstants.DORADO);
+        btnRegistrarse.setFont(util.UIConstants.FUENTE_BOTON);
+
+        JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.setBackground(util.UIConstants.GRIS_NEUTRAL);
+        btnCancelar.setForeground(util.UIConstants.NEGRO);
+        btnCancelar.setFont(util.UIConstants.FUENTE_BOTON);
+
+        btnEntrar.addActionListener(e -> handleLogin());
+        btnRegistrarse.addActionListener(e -> openRegisterWindow());
+        btnCancelar.addActionListener(e -> dispose());
+
+        panelBotones.add(btnEntrar);
+        panelBotones.add(btnRegistrarse);
+        panelBotones.add(btnCancelar);
+        add(panelBotones, BorderLayout.SOUTH);
     }
 
     private void handleLogin() {
-        String user = usernameField.getText().trim();
-        String pass = new String(passwordField.getPassword()).trim();
+        String user = campoUsuario.getText().trim();
+        String pass = new String(campoContraseña.getPassword()).trim();
 
         // Validar campos
         String errorMessage = validarCamposLogin(user, pass);
@@ -80,12 +112,13 @@ public class LoginWindow extends JFrame {
         User usuario = authController.manejarLogin(user, pass);
 
         if (usuario != null) {
-            // 1. AVISAR A LA VENTANA PRINCIPAL
+            // Avisar a la ventana principal
             mainWindow.setUsuarioLogueado(usuario);
 
-            JOptionPane.showMessageDialog(this, "¡Bienvenido de nuevo!");
+            // Mostrar mensaje de bienvenida con tema personalizado
+            mostrarMensajeExito("¡Bienvenido de nuevo, " + usuario.getNombre() + "!");
 
-            // 2. CERRAR ESTA VENTANA DE LOGIN
+            // Cerrar ventana de login
             dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error de Autenticación",
@@ -120,5 +153,38 @@ public class LoginWindow extends JFrame {
 
     private void openRegisterWindow() {
         new RegisterWindow(authController, this);
+    }
+
+    // Método para mostrar mensajes de éxito con tema personalizado
+    private void mostrarMensajeExito(String mensaje) {
+        JDialog dialogo = new JDialog(this, "Éxito", true);
+        dialogo.setLayout(new BorderLayout());
+        dialogo.setSize(350, 150);
+        dialogo.setLocationRelativeTo(this);
+
+        // Panel con mensaje
+        JPanel panelMensaje = new JPanel();
+        panelMensaje.setBackground(util.UIConstants.VERDE_AZULADO);
+        panelMensaje.setBorder(util.UIConstants.BORDE_VACIO_20);
+
+        JLabel lblMensaje = new JLabel(mensaje);
+        lblMensaje.setFont(util.UIConstants.FUENTE_SUBTITULO);
+        lblMensaje.setForeground(util.UIConstants.BLANCO);
+        panelMensaje.add(lblMensaje);
+
+        dialogo.add(panelMensaje, BorderLayout.CENTER);
+
+        // Botón OK
+        JPanel panelBoton = new JPanel();
+        panelBoton.setBackground(util.UIConstants.BLANCO);
+        JButton btnOk = new JButton("OK");
+        btnOk.setBackground(util.UIConstants.VERDE_EXITO);
+        btnOk.setForeground(util.UIConstants.BLANCO);
+        btnOk.setFont(util.UIConstants.FUENTE_BOTON);
+        btnOk.addActionListener(e -> dialogo.dispose());
+        panelBoton.add(btnOk);
+
+        dialogo.add(panelBoton, BorderLayout.SOUTH);
+        dialogo.setVisible(true);
     }
 }

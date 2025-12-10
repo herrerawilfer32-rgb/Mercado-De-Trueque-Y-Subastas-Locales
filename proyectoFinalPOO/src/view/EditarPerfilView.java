@@ -35,7 +35,7 @@ public class EditarPerfilView extends JDialog {
         this.usuario = usuario;
         this.userController = userController;
 
-        setSize(500, 600);
+        setSize(500, 700); // Aumentado de 600 a 700 para mostrar todo el contenido
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
 
@@ -43,20 +43,25 @@ public class EditarPerfilView extends JDialog {
     }
 
     private void initComponents() {
-        // Panel principal con scroll
+        // Encabezado
+        JPanel panelEncabezado = new JPanel();
+        panelEncabezado.setBackground(util.UIConstants.MORADO_PRINCIPAL);
+        panelEncabezado.setBorder(util.UIConstants.BORDE_VACIO_20);
+
+        JLabel lblTitulo = new JLabel("✏️ Editar Mi Perfil");
+        lblTitulo.setFont(util.UIConstants.FUENTE_TITULO);
+        lblTitulo.setForeground(util.UIConstants.DORADO);
+        panelEncabezado.add(lblTitulo);
+
+        add(panelEncabezado, BorderLayout.NORTH);
+
+        // Panel principal SIN scroll
         JPanel panelPrincipal = new JPanel();
         panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
-        panelPrincipal.setBackground(Color.WHITE);
+        panelPrincipal.setBackground(util.UIConstants.BLANCO);
 
-        // Título
-        JLabel lblTitulo = new JLabel("✏️ Editar Perfil");
-        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 24));
-        lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panelPrincipal.add(lblTitulo);
-        panelPrincipal.add(Box.createVerticalStrut(20));
-
-        // Sección: Información no editable
+        // Información no editable
         panelPrincipal.add(crearSeccion("📋 Información de la Cuenta (No Editable)"));
         panelPrincipal.add(crearCampoSoloLectura("Nombre de Usuario:", usuario.getNombreUsuario()));
         panelPrincipal.add(crearCampoSoloLectura("Cédula/ID:", usuario.getId()));
@@ -68,7 +73,7 @@ public class EditarPerfilView extends JDialog {
         panelPrincipal.add(crearCampoSoloLectura("Reputación:", reputacionTexto));
         panelPrincipal.add(Box.createVerticalStrut(20));
 
-        // Sección: Información personal editable
+        // Información personal editable
         panelPrincipal.add(crearSeccion("👤 Información Personal"));
 
         txtNombre = new JTextField(usuario.getNombre() != null ? usuario.getNombre() : "", 20);
@@ -85,7 +90,7 @@ public class EditarPerfilView extends JDialog {
 
         panelPrincipal.add(Box.createVerticalStrut(20));
 
-        // Sección: Cambiar contraseña
+        // Cambiar contraseña
         panelPrincipal.add(crearSeccion("🔒 Cambiar Contraseña (Opcional)"));
 
         JLabel lblInfo = new JLabel("Deja en blanco si no deseas cambiar la contraseña");
@@ -101,26 +106,23 @@ public class EditarPerfilView extends JDialog {
         txtConfirmarPassword = new JPasswordField(20);
         panelPrincipal.add(crearCampoEditable("Confirmar Contraseña:", txtConfirmarPassword));
 
-        // Scroll pane
-        JScrollPane scrollPane = new JScrollPane(panelPrincipal);
-        scrollPane.setBorder(null);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        add(scrollPane, BorderLayout.CENTER);
+        // Agregar panel principal SIN JScrollPane
+        add(panelPrincipal, BorderLayout.CENTER);
 
         // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
-        panelBotones.setBackground(new Color(240, 240, 240));
+        panelBotones.setBackground(util.UIConstants.MORADO_PRINCIPAL);
 
         JButton btnGuardar = new JButton("💾 Guardar Cambios");
-        btnGuardar.setBackground(new Color(46, 204, 113));
-        btnGuardar.setForeground(Color.WHITE);
-        btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 12));
+        btnGuardar.setBackground(util.UIConstants.VERDE_EXITO);
+        btnGuardar.setForeground(util.UIConstants.BLANCO);
+        btnGuardar.setFont(util.UIConstants.FUENTE_BOTON);
         btnGuardar.addActionListener(e -> guardarCambios());
 
         JButton btnCancelar = new JButton("❌ Cancelar");
-        btnCancelar.setBackground(new Color(149, 165, 166));
-        btnCancelar.setForeground(Color.WHITE);
-        btnCancelar.setFont(new Font("SansSerif", Font.BOLD, 12));
+        btnCancelar.setBackground(util.UIConstants.GRIS_NEUTRAL);
+        btnCancelar.setForeground(util.UIConstants.NEGRO);
+        btnCancelar.setFont(util.UIConstants.FUENTE_BOTON);
         btnCancelar.addActionListener(e -> dispose());
 
         panelBotones.add(btnCancelar);
@@ -131,24 +133,24 @@ public class EditarPerfilView extends JDialog {
 
     private JLabel crearSeccion(String titulo) {
         JLabel lbl = new JLabel(titulo);
-        lbl.setFont(new Font("SansSerif", Font.BOLD, 16));
-        lbl.setForeground(new Color(52, 73, 94));
+        lbl.setFont(util.UIConstants.FUENTE_SUBTITULO);
+        lbl.setForeground(util.UIConstants.MORADO_SECUNDARIO);
         lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
         return lbl;
     }
 
     private JPanel crearCampoSoloLectura(String etiqueta, String valor) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(util.UIConstants.BLANCO);
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
 
         JLabel lbl = new JLabel(etiqueta);
-        lbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+        lbl.setFont(util.UIConstants.FUENTE_NORMAL);
         lbl.setPreferredSize(new Dimension(150, 25));
 
         JLabel lblValor = new JLabel(valor);
-        lblValor.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        lblValor.setFont(util.UIConstants.FUENTE_NORMAL);
         lblValor.setForeground(Color.GRAY);
 
         panel.add(lbl);
@@ -159,15 +161,20 @@ public class EditarPerfilView extends JDialog {
 
     private JPanel crearCampoEditable(String etiqueta, JTextField campo) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(util.UIConstants.BLANCO);
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
         JLabel lbl = new JLabel(etiqueta);
-        lbl.setFont(new Font("SansSerif", Font.BOLD, 12));
+        lbl.setFont(util.UIConstants.FUENTE_NORMAL);
         lbl.setPreferredSize(new Dimension(150, 25));
 
         campo.setPreferredSize(new Dimension(250, 30));
+        // Fondo gris claro para distinguir campos editables
+        campo.setBackground(new Color(245, 245, 245));
+        campo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
         panel.add(lbl);
         panel.add(campo);

@@ -141,13 +141,48 @@ public class DetallePublicacionView extends JFrame {
             panelInfo.add(lblCerrada);
         }
 
-        // Imágenes (solo rutas por ahora)
+        // Galería de imágenes
         panelInfo.add(Box.createVerticalStrut(10));
-        panelInfo.add(new JLabel("Imágenes adjuntas: " + publicacion.getFotosPaths().size()));
-        for (String path : publicacion.getFotosPaths()) {
-            JLabel lblPath = new JLabel(path);
-            lblPath.setForeground(Color.GRAY);
-            panelInfo.add(lblPath);
+        if (publicacion.getFotosPaths() != null && !publicacion.getFotosPaths().isEmpty()) {
+            JLabel lblTituloFotos = new JLabel("Fotos del artículo:");
+            lblTituloFotos.setFont(new Font("Arial", Font.BOLD, 14));
+            panelInfo.add(lblTituloFotos);
+            panelInfo.add(Box.createVerticalStrut(5));
+
+            // Panel para galería de fotos
+            JPanel panelGaleria = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+            panelGaleria.setBackground(new Color(106, 153, 149));
+            panelGaleria.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            for (String rutaFoto : publicacion.getFotosPaths()) {
+                try {
+                    // Cargar imagen con tamaño de miniatura
+                    javax.swing.ImageIcon iconoFoto = util.ImageUtils.loadImage(rutaFoto, 120, 120);
+                    if (iconoFoto != null) {
+                        JLabel lblFoto = new JLabel(iconoFoto);
+                        lblFoto.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+                        lblFoto.setToolTipText(rutaFoto);
+
+                        // Click para ver en grande
+                        lblFoto.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                        lblFoto.addMouseListener(new java.awt.event.MouseAdapter() {
+                            public void mouseClicked(java.awt.event.MouseEvent e) {
+                                mostrarImagenGrande(rutaFoto);
+                            }
+                        });
+
+                        panelGaleria.add(lblFoto);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error cargando imagen: " + rutaFoto);
+                }
+            }
+
+            panelInfo.add(panelGaleria);
+        } else {
+            JLabel lblSinFotos = new JLabel("No hay fotos adjuntas");
+            lblSinFotos.setForeground(Color.GRAY);
+            panelInfo.add(lblSinFotos);
         }
 
         getContentPane().add(new JScrollPane(panelInfo), BorderLayout.CENTER);
@@ -341,6 +376,41 @@ public class DetallePublicacionView extends JFrame {
     private void configurarSeccionTrueque(JPanel panelInfo) {
         PublicacionTrueque trueque = (PublicacionTrueque) publicacion;
         panelInfo.add(new JLabel("Busca a cambio: " + trueque.getObjetosDeseados()));
+
+        // Si es el dueño, mostrar botón de "Ver Coincidencias"
+        if (usuarioActual != null && publicacion.getIdVendedor().equals(usuarioActual.getId())) {
+            panelInfo.add(Box.createVerticalStrut(10));
+            JButton btnSugerencias = new JButton("💡 Ver Sugerencias de Intercambio");
+            btnSugerencias.setBackground(new Color(241, 196, 15)); // Amarillo
+            btnSugerencias.setForeground(Color.BLACK);
+            btnSugerencias.setAlignmentX(Component.LEFT_ALIGNMENT);
+            btnSugerencias.addActionListener(e -> mostrarSugerencias(trueque.getIdArticulo()));
+            panelInfo.add(btnSugerencias);
+        }
+    }
+
+    private void mostrarSugerencias(String idPublicacion) {
+        List<Publicacion> recomendaciones = controller.recomendarTrueques(idPublicacion);
+
+        if (recomendaciones.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "No hemos encontrado publicaciones que coincidan con tus deseos por ahora.",
+                    "Sin coincidencias", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            // Mostrar lista de recomendaciones
+            DefaultListModel<String> model = new DefaultListModel<>();
+            for (Publicacion p : recomendaciones) {
+                model.addElement("• " + p.getTitulo() + " (" + p.getCategoria() + ")");
+            }
+
+            JList<String> list = new JList<>(model);
+            JScrollPane scroll = new JScrollPane(list);
+            scroll.setPreferredSize(new Dimension(300, 200));
+
+            JOptionPane.showMessageDialog(this, scroll,
+                    "¡Encontramos " + recomendaciones.size() + " posibles intercambios!",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     // ============= DIÁLOGO DE OFERTAS =============
@@ -475,5 +545,32 @@ public class DetallePublicacionView extends JFrame {
         new CrearReporteDialog(this, reporteController, usuarioActual,
                 publicacion.getIdArticulo(), TipoReporte.PUBLICACION)
                 .setVisible(true);
+    }
+
+    // Método para mostrar imagen en grande al hacer click
+    private void mostrarImagenGrande(String rutaImagen) {
+        JDialog dialogoImagen = new JDialog(this, "Vista de Imagen", true);
+        dialogoImagen.setSize(600, 600);
+        dialogoImagen.setLocationRelativeTo(this);
+        dialogoImagen.setLayout(new BorderLayout());
+
+        try {
+            javax.swing.ImageIcon iconoGrande = util.ImageUtils.loadImage(rutaImagen, 550, 550);
+            if (iconoGrande != null) {
+                JLabel lblImagenGrande = new JLabel(iconoGrande);
+                lblImagenGrande.setHorizontalAlignment(SwingConstants.CENTER);
+                dialogoImagen.add(new JScrollPane(lblImagenGrande), BorderLayout.CENTER);
+
+                JButton btnCerrar = new JButton("Cerrar");
+                btnCerrar.addActionListener(e -> dialogoImagen.dispose());
+                JPanel panelBoton = new JPanel();
+                panelBoton.add(btnCerrar);
+                dialogoImagen.add(panelBoton, BorderLayout.SOUTH);
+
+                dialogoImagen.setVisible(true);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar la imagen", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

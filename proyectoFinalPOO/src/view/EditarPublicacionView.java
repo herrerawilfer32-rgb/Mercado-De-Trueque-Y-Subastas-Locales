@@ -40,40 +40,58 @@ public class EditarPublicacionView extends JFrame {
     }
 
     private void initComponents() {
-        JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 10));
-        formPanel.setBackground(new Color(106, 153, 149));
-        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        // Encabezado
+        JPanel panelEncabezado = new JPanel();
+        panelEncabezado.setBackground(util.UIConstants.MORADO_PRINCIPAL);
+        panelEncabezado.setBorder(util.UIConstants.BORDE_VACIO_20);
 
-        JLabel label = new JLabel("Título:");
-        label.setBackground(new Color(106, 153, 149));
-        formPanel.add(label);
+        JLabel lblTitulo = new JLabel("Editar Publicación");
+        lblTitulo.setFont(util.UIConstants.FUENTE_TITULO);
+        lblTitulo.setForeground(util.UIConstants.DORADO);
+        panelEncabezado.add(lblTitulo);
+
+        getContentPane().add(panelEncabezado, BorderLayout.NORTH);
+
+        // Formulario
+        JPanel panelFormulario = new JPanel(new GridLayout(2, 2, 10, 10));
+        panelFormulario.setBackground(util.UIConstants.BLANCO);
+        panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        JLabel lblTit = new JLabel("Título:");
+        lblTit.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelFormulario.add(lblTit);
         txtTitulo = new JTextField(publicacion.getTitulo());
-        txtTitulo.setBackground(new Color(206, 244, 253));
-        formPanel.add(txtTitulo);
+        panelFormulario.add(txtTitulo);
 
-        JLabel label_1 = new JLabel("Descripción:");
-        label_1.setBackground(new Color(106, 153, 149));
-        formPanel.add(label_1);
+        JLabel lblDesc = new JLabel("Descripción:");
+        lblDesc.setFont(util.UIConstants.FUENTE_NORMAL);
+        panelFormulario.add(lblDesc);
         txtDescripcion = new JTextArea(publicacion.getDescripcion());
-        txtDescripcion.setBackground(new Color(206, 244, 253));
         txtDescripcion.setLineWrap(true);
-        formPanel.add(new JScrollPane(txtDescripcion));
+        panelFormulario.add(new JScrollPane(txtDescripcion));
 
-        getContentPane().add(formPanel, BorderLayout.CENTER);
+        getContentPane().add(panelFormulario, BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.setBackground(new Color(106, 153, 149));
+        // Botones
+        JPanel panelBotones = new JPanel(new FlowLayout());
+        panelBotones.setBackground(util.UIConstants.BLANCO);
+
         JButton btnGuardar = new JButton("Guardar Cambios");
-        btnGuardar.setBackground(new Color(29, 145, 169));
+        btnGuardar.setBackground(util.UIConstants.VERDE_EXITO);
+        btnGuardar.setForeground(util.UIConstants.BLANCO);
+        btnGuardar.setFont(util.UIConstants.FUENTE_BOTON);
+
         JButton btnCancelar = new JButton("Cancelar");
-        btnCancelar.setBackground(new Color(29, 145, 169));
+        btnCancelar.setBackground(util.UIConstants.GRIS_NEUTRAL);
+        btnCancelar.setForeground(util.UIConstants.NEGRO);
+        btnCancelar.setFont(util.UIConstants.FUENTE_BOTON);
 
         btnGuardar.addActionListener(e -> guardarCambios());
         btnCancelar.addActionListener(e -> dispose());
 
-        buttonPanel.add(btnGuardar);
-        buttonPanel.add(btnCancelar);
-        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+        panelBotones.add(btnGuardar);
+        panelBotones.add(btnCancelar);
+        getContentPane().add(panelBotones, BorderLayout.SOUTH);
     }
 
     private void guardarCambios() {
