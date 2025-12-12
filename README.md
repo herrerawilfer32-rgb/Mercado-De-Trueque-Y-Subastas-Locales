@@ -72,6 +72,6 @@ Puedes consultar la documentación completa haciendo clic en los siguientes enla
 *   [📙 Manual de Instalación](proyectoFinalPOO/Manual_Instalacion_MercadoTrueque.pdf) - Guía de configuración y despliegue.
 
 ## 👥 Autores
-Anggel Leal
-Wilfer Herrera
-David Santos
+* Anggel Leal
+* Wilfer Herrera
+* David Santos
