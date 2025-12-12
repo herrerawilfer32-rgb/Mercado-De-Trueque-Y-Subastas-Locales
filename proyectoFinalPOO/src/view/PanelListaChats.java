@@ -1,8 +1,9 @@
-/*
- * Clase: PanelListaChats
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Vista de la interfaz.
- */
+/**
+ * Clase:  PanelListaChats
+ * Vista de la interfaz.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.2
+ */
 
 package view;
 
@@ -217,3 +218,4 @@ public class PanelListaChats extends JPanel {
         chatSeleccionListener.abrirChat(chatSeleccionado);
     }
 }
+

@@ -1,8 +1,9 @@
-/*
- * Clase: RegisterWindow
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Vista de la interfaz.
- */
+/**
+ * Clase:  RegisterWindow
+ * Vista de la interfaz.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.2
+ */
 
 package view;
 
@@ -10,6 +11,13 @@ import controller.AuthController;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Ventana de registro de nuevos usuarios del sistema de trueque y subastas.
+ * Esta ventana permite al usuario ingresar sus datos personales y de acceso para crear una nueva cuenta. 
+ *
+ *Incluye validación de campos 
+ * 
+ */
 public class RegisterWindow extends JFrame {
 
     private final AuthController authController;
@@ -23,6 +31,12 @@ public class RegisterWindow extends JFrame {
     private JTextField txtApellido;
     private JTextField txtCiudad;
 
+     /**
+     * Crea la ventana de registro, inicializando todos sus componentes gráficos e integrando el controlador encargado de la lógica de registro.
+     *
+     * @param authController controlador para manejar la creación de nuevos usuarios
+     * @param loginWindow    ventana de inicio de sesión usada como referencia para posicionar esta
+     */
     public RegisterWindow(AuthController authController, LoginWindow loginWindow) {
         this.authController = authController;
 

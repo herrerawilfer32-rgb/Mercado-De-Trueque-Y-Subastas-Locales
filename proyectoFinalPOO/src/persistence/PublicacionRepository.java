@@ -1,8 +1,9 @@
-/*
- * Clase: PublicacionRepository
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Repositorio de persistencia de publicaciones.
- */
+/**
+ * Clase:PublicacionRepository
+ * Repositorio de persistencia de publicaciones.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.0
+ */
 
 package persistence;
 

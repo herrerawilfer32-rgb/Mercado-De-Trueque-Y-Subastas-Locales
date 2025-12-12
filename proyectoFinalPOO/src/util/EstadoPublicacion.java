@@ -1,9 +1,9 @@
-/*
- * Clase: EstadoPublicacion
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Clase utilidad.
- */
-
+/**
+ * Clase:  EstadoPublicacion
+ *Enum que representa los diferentes estados en los que puede encontrarse una publicación dentro del sistema de ventas, trueques o subastas.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.1
+ */
 package util;
 
 public enum EstadoPublicacion {

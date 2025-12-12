@@ -1,20 +1,23 @@
-/*
+/**
  * Clase: ConvertirAAdmin
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Clase utilidad.
- */
+ * Utilidad para convertir un usuario existente en administrador. Ejecuta este programa una vez para dar permisos de admin al usuario "admin".
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.1
+ */
 
 package util;
 
 import model.User;
 import persistence.UserRepository;
 
-/**
- * Utilidad para convertir un usuario existente en administrador.
- * Ejecuta este programa una vez para dar permisos de admin al usuario "admin".
- */
-public class ConvertirAAdmin {
 
+public class ConvertirAAdmin {
+    
+    /**
+     * Método principal que ejecuta la conversión del usuario "admin" a rol ADMIN.
+     *
+     * @param args argumentos del sistema (no utilizados)
+     */
     public static void main(String[] args) {
         UserRepository userRepo = new UserRepository();
 
@@ -34,10 +37,10 @@ public class ConvertirAAdmin {
         boolean exito = userRepo.actualizar(admin);
 
         if (exito) {
-            System.out.println("✅ Usuario 'admin' convertido a administrador exitosamente!");
+            System.out.println(" Usuario 'admin' convertido a administrador exitosamente!");
             System.out.println("Ahora puedes iniciar sesión y ver el botón 'Panel Admin'");
         } else {
-            System.out.println("❌ Error al actualizar el usuario");
+            System.out.println(" Error al actualizar el usuario");
         }
     }
 }

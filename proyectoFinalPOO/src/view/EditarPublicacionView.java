@@ -1,8 +1,9 @@
-/*
+/**
  * Clase: EditarPublicacionView
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Vista de la interfaz.
- */
+ * Vista de la interfaz.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.2
+ */
 
 package view;
 
@@ -13,6 +14,10 @@ import model.User;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Ventana para editar una publicación existente.
+ * Muestra un formulario con el título y descripción, permite modificarlos y envía los cambios al controlador para actualizar en la base de datos.
+ */
 public class EditarPublicacionView extends JFrame {
 
     private final PublicacionController pubController;
@@ -23,6 +28,14 @@ public class EditarPublicacionView extends JFrame {
     private JTextField txtTitulo;
     private JTextArea txtDescripcion;
 
+    /**
+     * Constructor de la ventana de edición.
+     *
+     * @param pubController Controlador de publicaciones
+     * @param usuario       Usuario que edita
+     * @param mainWindow    Ventana principal para refrescar al terminar
+     * @param publicacion   Publicación a modificar
+     */
     public EditarPublicacionView(PublicacionController pubController, User usuario, MainWindow mainWindow,
             Publicacion publicacion) {
         this.pubController = pubController;
@@ -39,6 +52,7 @@ public class EditarPublicacionView extends JFrame {
         initComponents();
     }
 
+    
     private void initComponents() {
         // Encabezado
         JPanel panelEncabezado = new JPanel();

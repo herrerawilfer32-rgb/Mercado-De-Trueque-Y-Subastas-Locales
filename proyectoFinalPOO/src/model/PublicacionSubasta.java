@@ -1,8 +1,9 @@
-/*
+/**
  * Clase: PublicacionSubasta
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Modelo de publicaciÃ³n tipo subasta.
- */
+ * Modelo de publicación tipo subasta.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.0
+ */
 
 package model;
 
@@ -16,6 +17,18 @@ public class PublicacionSubasta extends Publicacion {
 	private double precioMinimo;
 	private Date fechaCierre;
 	
+	 /**
+     * Crea una nueva publicación de subasta.
+     *
+     * @param idArticulo       Identificador único del artículo subastado.
+     * @param titulo           Título de la publicación.
+     * @param descripcion      Descripción del artículo.
+     * @param idVendedor       ID del usuario que publica la subasta.
+     * @param fotosPaths       Lista de rutas a las imágenes asociadas.
+     * @param precioMinimo     Precio mínimo para iniciar la subasta.
+     * @param fechaVencimiento Parámetro no utilizado (verificar si se debe eliminar).
+     * @param fechaCierre      Fecha límite para recibir ofertas.
+     */
 	public PublicacionSubasta(String idArticulo, String titulo, String descripcion, 
             String idVendedor, List<String> fotosPaths, 
             double precioMinimo, Date fechaVencimiento, Date fechaCierre) {

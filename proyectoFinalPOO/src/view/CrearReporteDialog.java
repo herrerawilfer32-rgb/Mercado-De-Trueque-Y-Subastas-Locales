@@ -1,8 +1,9 @@
-/*
+/**
  * Clase: CrearReporteDialog
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Vista de la interfaz.
- */
+ * Diálogo modal que permite a un usuario crear un reporte sobre una publicación.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.4
+ */
 
 package view;
 
@@ -24,6 +25,15 @@ public class CrearReporteDialog extends JDialog {
     private JTextField txtMotivo;
     private JTextArea txtDescripcion;
 
+    /**
+     * Crea el diálogo para registrar un nuevo reporte.
+     *
+     * @param owner                Ventana padre.
+     * @param reporteController    Controlador encargado de gestionar los reportes.
+     * @param reportante           Usuario que está enviando el reporte.
+     * @param idObjetoReportado    ID del usuario, publicación u oferta reportada.
+     * @param tipoPredefinido      Tipo de reporte preseleccionado (si aplica).
+     */
     public CrearReporteDialog(Frame owner, ReporteController reporteController, User reportante,
             String idObjetoReportado, TipoReporte tipoPredefinido) {
         super(owner, "Crear Reporte", true);
@@ -38,6 +48,7 @@ public class CrearReporteDialog extends JDialog {
 
         initUI();
     }
+    
 
     private void initUI() {
         // Encabezado
@@ -104,7 +115,11 @@ public class CrearReporteDialog extends JDialog {
 
         add(panelBotones, BorderLayout.SOUTH);
     }
-
+    
+/**
+ * Valida los campos ingresados y envía el reporte al controlador.
+ * Muestra mensajes de éxito o error según el resultado.
+ */
     private void enviarReporte() {
         String motivo = txtMotivo.getText().trim();
         String descripcion = txtDescripcion.getText().trim();

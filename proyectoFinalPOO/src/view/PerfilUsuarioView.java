@@ -1,9 +1,9 @@
-/*
+/**
  * Clase: PerfilUsuarioView
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Vista de la interfaz.
- */
-
+ * Vista de la interfaz.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.0
+ */
 package view;
 
 import controller.UserController;
@@ -12,12 +12,31 @@ import model.User;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Vista modal que muestra el perfil de un usuario. 
+ *Esta ventana permite:
+ * -Visualizar los datos principales del usuario (nombre, ubicación, reputación).
+ * -Calificar al usuario si el contexto lo permite.
+ * -Editar el perfil cuando se trata del propio usuario.
+ *
+ */
 public class PerfilUsuarioView extends JDialog {
 
     private User usuario;
     private UserController userController;
     private Frame parent;
 
+    /**
+     * Constructor principal que construye la vista del perfil, con todas las opciones disponibles dependiendo de los parámetros proporcionados.
+     *
+     * @param parent Componente padre para centrar la ventana.
+     * @param usuario Usuario cuyo perfil se mostrará.
+     * @param userController Controlador de usuarios.
+     * @param puedeCalificar Indica si el usuario actual puede emitir una calificación.
+     * @param idPublicacion ID de la publicación asociada a la calificación (si aplica).
+     * @param usuarioCalificador Usuario que realiza la calificación.
+     * @param esPropioPerfil Indica si se está mostrando el propio perfil.
+     */
     public PerfilUsuarioView(Frame parent, User usuario, UserController userController, boolean puedeCalificar,
             String idPublicacion, User usuarioCalificador, boolean esPropioPerfil) {
         super(parent, esPropioPerfil ? "Mi Perfil" : "Perfil de Usuario", true);

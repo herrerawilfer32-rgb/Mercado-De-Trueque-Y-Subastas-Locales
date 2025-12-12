@@ -1,8 +1,9 @@
-/*
+/**
  * Clase: DetallePublicacionView
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Vista de la interfaz.
- */
+ * modelo de interfaz
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.2
+ */
 
 package view;
 
@@ -41,6 +42,10 @@ public class DetallePublicacionView extends JFrame {
     private JPanel panelHistorialPujas;
     private final NumberFormat formatoMoneda;
 
+    /**
+    *Constructor principal: recibe controladores, la publicación, el usuario actual y la ventana principal.
+    * Configura formato de moneda, tamaño e inicializa los componentes.
+    */
     public DetallePublicacionView(PublicacionController controller,
             Publicacion publicacion,
             User usuarioActual,

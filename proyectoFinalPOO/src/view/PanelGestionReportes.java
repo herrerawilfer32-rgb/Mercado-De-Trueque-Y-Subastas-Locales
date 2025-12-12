@@ -1,9 +1,9 @@
-/*
+/**
  * Clase: PanelGestionReportes
- * Autores: Anggel Leal, Wilfer Herrera, David Santos
- * DescripciÃ³n: Vista de la interfaz.
- */
-
+ * Vista de la interfaz.
+ * @author Anggel Leal, Wilfer Herrera, David Santos
+ * @version 1.2
+ */
 package view;
 
 import controller.ReporteController;
@@ -16,6 +16,16 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * panel de administración diseñado para que los usuarios tipo administrador puedan visualizar, filtrar y gestionar los reportes realizados dentro del sistema.
+ * 
+ * Este panel permite:
+ * - Listar todos los reportes o filtrarlos por estado.
+ * - Visualizar la información principal de cada reporte en una tabla.
+ * - Abrir un cuadro de diálogo con los detalles del reporte seleccionado.
+ * - Resolver o rechazar reportes mediante acciones directas desde la interfaz.
+ *
+ */
 public class PanelGestionReportes extends JPanel {
 
     private final ReporteController reporteController;
