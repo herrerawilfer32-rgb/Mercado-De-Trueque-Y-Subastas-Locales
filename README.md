@@ -1,4 +1,4 @@
-# Mercado de Trueque y Subastas Locales
+# TrueQ
 
 Aplicación de escritorio desarrollada en Java para facilitar el intercambio de bienes mediante trueques y subastas entre usuarios locales. Este sistema permite a los usuarios publicar artículos, realizar ofertas, pujar en subastas y comunicarse mediante un chat integrado.
 
